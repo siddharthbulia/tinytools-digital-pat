@@ -3,6 +3,15 @@
     <channel>
         <title>Digital Pat</title>
         <item>
+            <title>2.8.2</title>
+            <description><![CDATA[Two more characters join the crew — Gagan and Vaibhav — for 26 to pick from. Choose them from Character ▸ (right-click your pet).]]></description>
+            <pubDate>Wed, 17 Jun 2026 15:28:46 +0530</pubDate>
+            <sparkle:version>2.8.2</sparkle:version>
+            <sparkle:shortVersionString>2.8.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.2.dmg" length="6495108" type="application/octet-stream" sparkle:edSignature="yodIdeRW0igODeMuFgFU0bpLILpLfgfh5Y5/kcf7/zVq/gto5hgdLFuy8MUxu3f2KLMRA4cLodtiAWtFUXmMDQ=="/>
+        </item>
+        <item>
             <title>2.8.1</title>
             <description><![CDATA[Freshened up Chahek's pixel art, plus under-the-hood groundwork for friend-specific features coming soon.]]></description>
             <pubDate>Wed, 17 Jun 2026 14:25:08 +0530</pubDate>
