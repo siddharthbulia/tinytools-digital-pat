@@ -3,6 +3,15 @@
     <channel>
         <title>Digital Pat</title>
         <item>
+            <title>2.8.3</title>
+            <description><![CDATA[Reliability fixes: your friends list always shows up now, and your pet's state (mood, character, online) keeps syncing to friends even after your Mac dozes or the connection blips — no more friends stuck looking like they're "napping."]]></description>
+            <pubDate>Wed, 17 Jun 2026 15:49:39 +0530</pubDate>
+            <sparkle:version>2.8.3</sparkle:version>
+            <sparkle:shortVersionString>2.8.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.3.dmg" length="6498682" type="application/octet-stream" sparkle:edSignature="xdEPK8o/MY2dHD+7HmQye/C7jVgfBxld+dWnnOepCRWqio3X3JdxurSx5AkUtzp9SpRe0bIO0Zhs1epiFQq/Cw=="/>
+        </item>
+        <item>
             <title>2.8.2</title>
             <description><![CDATA[Two more characters join the crew — Gagan and Vaibhav — for 26 to pick from. Choose them from Character ▸ (right-click your pet).]]></description>
             <pubDate>Wed, 17 Jun 2026 15:28:46 +0530</pubDate>

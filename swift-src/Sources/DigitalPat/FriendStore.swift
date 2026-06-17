@@ -69,6 +69,9 @@ final class FriendStore: ObservableObject {
     private var graphSub: RealtimeSubscription?
     private let netMonitor = NWPathMonitor()                             // self-heal presence after a network drop
     private var netSatisfied = true
+    private var rtStatusSub: RealtimeSubscription?                       // self-heal after a SILENT socket drop
+    private var rtWasDown = false                                        // saw a disconnect since arming
+    private var rtArmed = false                                          // ignore the initial connect
 
     private var myUID: String?
     private var myName = UserDefaults.standard.string(forKey: "pat.me.name") ?? "friend"
@@ -99,6 +102,26 @@ final class FriendStore: ObservableObject {
             }
         }
         netMonitor.start(queue: DispatchQueue(label: "ai.bulia.pat.net"))
+
+        // The realtime socket can also drop SILENTLY (server idle-timeout, transient stall) without any
+        // network-path change — supabase-swift auto-reconnects + re-joins channels, but presence track()
+        // is a one-shot message that is NOT re-sent on rejoin, so MY mood/character/online state stops
+        // reaching friends (they mark me offline → "napping", and my changes don't reflect). Observe the
+        // connection status and, on a RE-connect (after a drop), re-establish + re-track everything.
+        rtStatusSub = client.realtimeV2.onStatusChange { [weak self] status in
+            Task { @MainActor [weak self] in self?.handleRealtimeStatus(status) }
+        }
+    }
+
+    private func handleRealtimeStatus(_ status: RealtimeClientStatus) {
+        guard rtArmed else { return }   // ignore the initial connect during start()
+        switch status {
+        case .disconnected: rtWasDown = true
+        case .connected:
+            if rtWasDown { rtWasDown = false; Task { await resubscribeAll() } }   // re-track presence after reconnect
+        case .connecting: break
+        @unknown default: break
+        }
     }
 
     var myDisplayName: String { myName }
@@ -117,6 +140,7 @@ final class FriendStore: ObservableObject {
         await refreshFriends()
         await subscribeFriendGraph()   // live-add/remove → no restart needed on either side
         startHeartbeat()
+        rtArmed = true                 // now react to realtime reconnects (not the initial connect)
     }
 
     private struct FriendRow: Decodable { let uid: String; let name: String; let active_character: String }

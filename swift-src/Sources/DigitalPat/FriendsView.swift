@@ -100,11 +100,15 @@ struct FriendsView: View {
                         .foregroundColor(.secondary)
                 }.frame(maxWidth: .infinity).padding(.vertical, 10)
             } else {
-                ScrollView {
-                    VStack(spacing: 6) {
-                        ForEach(store.friends) { f in FriendRow(friend: f) }
-                    }
-                }.frame(maxHeight: 220)
+                // A plain VStack sizes to its rows; only wrap in a FIXED-height scroller when the list
+                // is long. (A bare ScrollView with only maxHeight collapses to ~0 in this content-sized
+                // window — that was the "count says N but the list is empty" bug.)
+                let rows = VStack(spacing: 6) { ForEach(store.friends) { f in FriendRow(friend: f) } }
+                if store.friends.count <= 6 {
+                    rows
+                } else {
+                    ScrollView { rows }.frame(height: 300)
+                }
             }
 
             Divider()
