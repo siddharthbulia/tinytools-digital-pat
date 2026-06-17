@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Pat v2 — Rooms · PRD</title>
+<style>
+  :root{
+    --bg:#fff7fb; --card:#ffffff; --ink:#2b2440; --muted:#7a7290; --accent:#ff7eb6;
+    --accent2:#8b7bff; --line:#f0e6f2; --good:#19a974; --warn:#e8a33d; --bad:#e0567a;
+    --code:#6b4ea8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#fff7fb,#f3f0ff);color:var(--ink);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:32px 22px 80px}
+  header.hero{background:linear-gradient(135deg,#ff9ecb,#9d8bff);color:#fff;border-radius:22px;
+    padding:30px 30px 26px;box-shadow:0 14px 40px rgba(157,139,255,.32)}
+  header.hero h1{margin:0 0 6px;font-size:30px;letter-spacing:-.5px}
+  header.hero .sub{font-size:17px;opacity:.95;font-weight:500}
+  .pill{display:inline-block;background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);
+    color:#fff;border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:600;margin:10px 6px 0 0}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin:22px 0;
+    box-shadow:0 4px 16px rgba(43,36,64,.05)}
+  .toc h2{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .toc ol{margin:0;padding-left:20px;columns:2;column-gap:26px}
+  .toc a{color:var(--accent2);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:16px 0;
+    box-shadow:0 4px 16px rgba(43,36,64,.05)}
+  h2.sec{margin:2px 0 12px;font-size:21px;letter-spacing:-.3px}
+  h3{margin:18px 0 6px;font-size:16px;color:var(--accent2)}
+  p{margin:8px 0}
+  ul{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  .lead{font-size:17px}
+  .callout{border-left:4px solid var(--accent);background:#fff0f7;border-radius:10px;padding:12px 16px;margin:14px 0}
+  .callout.change{border-left-color:var(--accent2);background:#f1eefe}
+  code{background:#f3eefb;color:var(--code);padding:1px 6px;border-radius:6px;font-size:13.5px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#faf6ff;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.5px}
+  .tag{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+  .tag.free{background:#e3f7ee;color:var(--good)} .tag.pro{background:#fdeede;color:var(--warn)}
+  .tag.block{background:#fde6ec;color:var(--bad)} .tag.v20{background:#e9f0ff;color:#4a6cf0}
+  .tag.v21{background:#f0eaff;color:#7a5bd8}
+  .muted{color:var(--muted)} .em{font-style:italic}
+  hr{border:none;border-top:1px dashed var(--line);margin:20px 0}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Digital Pat v2 — <b>Rooms</b> 🏠🐱</h1>
+  <div class="sub">Your person's little pixel self lives on your desktop — and you <b>poke</b> each other to say hi.</div>
+  <div>
+    <span class="pill">rev. 2 · post-review</span>
+    <span class="pill">poke + pet, not "presence"</span>
+    <span class="pill">works at n = 2</span>
+    <span class="pill">$14.99 one-time + AI credits</span>
+  </div>
+</header>
+
+<div class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#p1">Problem</a></li>
+    <li><a href="#p2">Target user</a></li>
+    <li><a href="#p3">30-second pitch</a></li>
+    <li><a href="#p4">Wedge &amp; upgrade trigger</a></li>
+    <li><a href="#p5">What's in the box (Free/Pro)</a></li>
+    <li><a href="#p6">UX — poke, room, presence</a></li>
+    <li><a href="#p7">Tech sketch + blockers</a></li>
+    <li><a href="#p8">Scope &amp; phasing</a></li>
+    <li><a href="#p9">Risks</a></li>
+    <li><a href="#p10">Success metrics</a></li>
+    <li><a href="#p11">Freemium logic</a></li>
+    <li><a href="#rev">What the reviewers said</a></li>
+  </ol>
+</div>
+
+<div class="callout change">
+  <b>What changed in rev. 2 (after the two-reviewer gate):</b>
+  <ul style="margin-bottom:0">
+    <li>Reframed around <b>poke + pet</b>, not "presence" — presence alone is the low-frequency trap that killed Sneek / Sqwiggle / Tandem.</li>
+    <li><b>Works for 2</b> (a couple / a duo) as well as a crew — a Room of 2 beats cold-start <em>and</em> the frequency problem (the Locket lesson).</li>
+    <li><b>No subscription</b> — generous free + <b>$14.99 one-time + optional AI credit packs</b>.</li>
+    <li><b>Streaks &amp; "who-missed-you" are FREE</b> (the retention loop); your one invite-coded Room is <b>free &amp; private</b>.</li>
+    <li>Split into a <b>thin, hardened v2.0</b> and a <b>v2.1 fast-follow</b>; engineering blockers promoted to hard requirements.</li>
+  </ul>
+</div>
+
+<section id="p1"><h2 class="sec">1 · Problem</h2>
+<p>Far-apart friends, couples, and remote crews lose the <b>ambient "we're here together" feeling</b>. Tools are too heavy (a Slack message is a <em>task</em>, a call is an <em>event</em>) or too cold (a green dot, "last seen"). There's no warm, zero-effort way to feel a person nearby <b>and give them a little nudge</b> — no words, no pressure.</p>
+<p>v1 already gives one person a companion that reacts to what they're doing. The insight: <b>make it two-player.</b> Your buddy lives on your friend's desktop and theirs on yours; a glance says they're around; a <b>poke</b> is the lightest way to talk.</p>
+</section>
+
+<section id="p2"><h2 class="sec">2 · Target user</h2>
+<p>Two shapes of the <b>same</b> simple thing — a Room you share with people you already like:</p>
+<ul>
+  <li><b>A pair</b> (the cold-start-proof wedge): a long-distance couple, best friends, two co-founders. Two people is enough to be magical <em>and</em> high-frequency.</li>
+  <li><b>A small crew of 5–15</b> already online together: a remote startup, a friend group, a Discord clique. (Literally the founder's own team — the 22 bundled characters are them.)</li>
+</ul>
+<p class="muted"><b>Not for:</b> large public communities, strangers, serious chat. A toy for people who already like each other.</p>
+</section>
+
+<section id="p3"><h2 class="sec">3 · The 30-second pitch</h2>
+<p class="lead em">Pick your pixel character (or make one from a selfie — or just <em>describe</em> one). Share a Room code with your person or your crew. Their little buddies now live in a cozy corner of your screen, quietly shifting as people code, vibe, or slip into meetings. Miss someone? <b>Poke them</b> — your character hops onto <em>their</em> screen and bounces around going "miss you 💕". Poke back. The lowest-effort, highest-cute way to say <em>hi, thinking of you.</em></p>
+</section>
+
+<section id="p4"><h2 class="sec">4 · Wedge &amp; upgrade trigger</h2>
+<ul>
+  <li><b>Wedge (free forever):</b> <b>"poke your person."</b> Their pixel self on your desktop + a cute poke. Works with <b>just two people</b> — no empty-room problem.</li>
+  <li><b>Upgrade trigger (Pro):</b> the moment you want to <b>make characters on demand</b> — <em>describe</em> "a grumpy wizard cat" and watch it appear. The irresistible, shareable part — and the part that costs real OpenAI money. Free taste; volume is paid credits.</li>
+</ul>
+</section>
+
+<section id="p5"><h2 class="sec">5 · What's in the box</h2>
+<h3><span class="tag free">FREE</span> &nbsp;Generous, fun forever</h3>
+<ul>
+  <li>Your Room, <b>private &amp; free</b> — create/join <b>one</b> invite-coded Room (great for a pair or a crew).</li>
+  <li>All <b>22 predefined characters</b> as your avatar.</li>
+  <li><b>1 custom character from a photo</b> + <b>1 free "describe-it" generation</b> (a taste of the magic).</li>
+  <li><b>Live presence</b>: your avatar auto-mirrors your activity mood; see everyone's in real time.</li>
+  <li><b>Unlimited pokes</b> + preset micro-messages ("yo", "miss you", "wassuppp", "gm", "🫶", "👀", "🎉") + emoji.</li>
+  <li><b>Streaks &amp; "who missed you"</b> — poke history + day-streaks. <span class="muted">(the retention loop — free)</span></li>
+  <li>A local library of unlimited characters; switch your active one anytime.</li>
+</ul>
+<h3><span class="tag pro">PRO</span> &nbsp;"Pat Pro" — <b>$14.99 one-time</b> + AI credit packs <span class="muted">(no subscription)</span></h3>
+<ul>
+  <li><b>Describe-to-create at volume</b> + unlimited custom characters — via <b>credit packs</b> (~$4.99 / 1,000 credits). <span class="muted">(direct OpenAI COGS)</span></li>
+  <li><b>Extra / multiple Rooms</b> beyond your free one.</li>
+  <li><b>Custom poke phrases &amp; seasonal emoji packs.</b></li>
+  <li><b>Cosmetics</b> — hats/accessories, Room backdrops/themes.</li>
+</ul>
+<div class="callout">v1's own (correct) reasoning: recurring billing "feels gross and kills conversion" for a vibe purchase. So Pro is a <b>one-time unlock</b>; the only recurring spend is <b>optional AI credits</b> that map 1:1 to our cost.</div>
+<h3>Out of scope (explicit)</h3>
+<p class="muted">Real chat / threads / DMs / long messages · voice / video / screenshare · mobile · public discovery / strangers / global feed · file sharing · typing indicators / read receipts · <b>any manager / surveillance / leaderboard framing</b>.</p>
+</section>
+
+<section id="p6"><h2 class="sec">6 · UX</h2>
+<h3>6.1 The poke — the hero loop</h3>
+<ul>
+  <li><b>Default = poke.</b> One tap → their app spawns <em>your</em> character, which hops in and bounces with "👋" for a few seconds, then leaves.</li>
+  <li><b>Or a micro-message</b>: preset / emoji → same cute invasion with your line in the bubble. <b>Poke back</b> in one tap.</li>
+  <li>Cute: poke combos, "poked!" confetti, gentle mutable sound.</li>
+  <li><b>Etiquette (hard rule):</b> a <b>non-activating overlay</b> that never steals keyboard focus or interrupts typing.</li>
+</ul>
+<h3>6.2 The Room — the cozy backdrop</h3>
+<p>A small always-available pixel space where each member's companion mills about in its current mood pose (coding/vibing/meeting/browsing/creating/idle) with a name tag. Glance → read the room. Draggable window + menu-bar peek.</p>
+<h3>6.3 Joining &amp; identity</h3>
+<p>First launch → name + avatar → create/join a Room by code (sharing a code is the whole onboarding). <b>Identity persistence (hard req):</b> Supabase anonymous auth, refresh token in <b>Keychain</b>; optional email magic-link to carry/merge identity across machines; reinstall behavior defined.</p>
+<h3>6.4 Presence sync — passive, cute-not-creepy</h3>
+<p>Publishes <b>only</b> <code>{name, characterId, mood, lastActiveAt}</code>. <b>Never</b> the app name, window title, URL, or keystrokes — only the <em>category mood</em>. Plus an <b>"appear away"</b> toggle. <b>No dashboards, ever.</b> <b>Reliability (hard req):</b> reconnect, sleep/wake re-subscribe, stale-ghost timeout.</p>
+<h3>6.5 Character creation</h3>
+<p>Predefined (instant, free) · from a photo (free: 1) · from a description (free: 1 taste, then credits). All via the Supabase Edge Function (key server-side).</p>
+</section>
+
+<section id="p7"><h2 class="sec">7 · Tech sketch</h2>
+<ul>
+  <li><b>Backend</b> = existing Supabase project <code>digital-pat</code> (<code>cpfbipbdsokoshzgqvsr</code>).</li>
+  <li><b>Client</b> = official <code>supabase-swift</code> SDK → native Realtime <b>Presence</b> (roster) + <b>Broadcast</b> (pokes). No hand-rolled websockets.</li>
+  <li><b>Pokes</b> persisted to a <code>pokes</code> table (powers free streaks / who-missed-you).</li>
+  <li><b>Model</b>: <code>profiles</code>, <code>rooms</code>, <code>room_members</code>, <code>pokes</code>, <code>blocks</code>, <code>usage_counters</code> + <b>RLS &amp; Realtime authorization policies</b>.</li>
+  <li><b>Custom-avatar distribution</b>: a full 17-PNG bundle is <b>~68 KB</b> → feasible via Storage; it's a <em>lifecycle</em> problem (scoping, discovery, cleanup), not size. <b>Deferred to v2.1.</b></li>
+</ul>
+<table>
+  <tr><th>Blocker (do before social launch)</th><th>Why</th></tr>
+  <tr><td><span class="tag block">BLOCK</span> Switch generation to <code>--verify-jwt</code> + server-side <b>per-uid daily cap</b> (<code>usage_counters</code>)</td><td>The embedded shared secret is extractable; it can't be the only guard on the founder's OpenAI card once generation is metered &amp; paid.</td></tr>
+  <tr><td><span class="tag block">BLOCK</span> <b>Server-side</b> poke gating: rate-limit + room-membership check + <code>blocks</code> table; client overlay = non-activating <code>NSPanel</code></td><td>The poke spawns a window on someone else's machine — without server gating it's a harassment + focus-stealing landmine.</td></tr>
+  <tr><td><span class="tag block">BLOCK</span> Realtime reconnect / sleep-wake re-subscribe / stale-ghost timeout</td><td>The exact bug that makes ambient-presence apps "feel broken."</td></tr>
+</table>
+</section>
+
+<section id="p8"><h2 class="sec">8 · Scope &amp; phasing <span class="muted">(ship thin first)</span></h2>
+<p><span class="tag v20">v2.0</span> <b>the shippable core (~10–11 dev-days):</b> shared default Room (invite code) · predefined-22 avatars (your own custom shown locally to you) · live presence (with reconnect/sleep-wake/stale-ghost) · <b>pokes + micro-messages</b> · free <b>streaks / who-missed-you</b> · <b>hardened generation</b> (<code>--verify-jwt</code> + per-uid caps) · poke overlay done right · anon-auth + Keychain persistence · mute/block + server-side poke rate-limit.</p>
+<p><span class="tag v21">v2.1</span> <b>fast-follow:</b> cross-member custom-avatar sync (others see your made-up character) · extra/multiple Rooms (Pro) · cosmetics / Room themes · custom poke-phrase &amp; emoji packs · magic-link cross-device merge.</p>
+</section>
+
+<section id="p9"><h2 class="sec">9 · Risks</h2>
+<ul>
+  <li><b>Cold-start / network effect</b> → the <b>pair wedge</b> (a Room of 2 is enough) + dead-simple invite codes + seed the founder's crew + "invite 1 person" onboarding.</li>
+  <li><b>Presence is low-frequency</b> (the graveyard's killer) → make <b>the poke</b> the daily loop; <b>streaks</b> reward reciprocity.</li>
+  <li><b>Creepy vs cute</b> → category mood only, never app/URL/keys; "appear away"; framed as affection; no manager dashboards.</li>
+  <li><b>AI cost scales with users</b> → free = predefined + 1 photo + 1 taste; volume = paid credits; <b>server-side daily caps</b> + <code>--verify-jwt</code>.</li>
+  <li><b>Poke spam / harassment</b> → server-side rate-limit, mute/block/report, room-scoped from day one.</li>
+  <li><b>Reconnect / sleep-wake / stale ghosts</b> → explicit handling or the Room feels broken.</li>
+  <li><b>macOS focus etiquette</b> → non-activating overlay, never steals focus.</li>
+  <li><b>Graveyard risk</b> → bet: cute desktop-pet hook + poke toy (not "presence") + working at <b>n = 2</b> = differentiated &amp; viral inside friend groups.</li>
+</ul>
+</section>
+
+<section id="p10"><h2 class="sec">10 · Success metrics</h2>
+<ul>
+  <li><b>Activation</b>: % of installs that join a Room <b>and exchange a poke</b> in week 1.</li>
+  <li><b>Magic number</b>: a Room with <b>≥2 mutually-poking members</b> (reciprocity, not headcount).</li>
+  <li><b>Daily poke rate</b> + <b>poke-back rate</b>; <b>streak retention</b>.</li>
+  <li><b>W2 retention</b> of members in a reciprocating Room.</li>
+  <li><b>Pro / credit conversion</b> via describe-to-create after the free taste.</li>
+</ul>
+</section>
+
+<section id="p11"><h2 class="sec">11 · The freemium logic, in one paragraph</h2>
+<p>You install to <b>poke your person</b> — free forever, works with just two of you, with predefined avatars, presence, unlimited pokes, and streaks. You pay (once, $14.99) and buy <b>credits</b> the moment you want to <b>conjure characters by describing them</b> — the delightful, shareable thing that also costs us OpenAI money — or run <b>extra Rooms</b>. The paywall sits exactly on our real costs. No subscription.</p>
+</section>
+
+<section id="rev"><h2 class="sec">What the reviewers said</h2>
+<h3>Product / GTM — verdict: REVISE (4/10) → addressed in rev. 2</h3>
+<p>Stop selling "presence" (it killed the graveyard); lead with poke + pet. The freemium line was inverted — don't paywall the private room or describe-to-create. Kill the subscription → one-time + credits. Move streaks / who-missed-you to free. <b>Strongly consider a pairs/couples (Locket-style) wedge</b> to beat cold-start <em>and</em> low frequency.</p>
+<h3>Engineering — verdict: 6/10 (buildable) → blockers promoted to requirements</h3>
+<p><code>supabase-swift</code> gives native Realtime Presence + Broadcast (no hand-rolled sockets). Sprite bundles are only ~68 KB, so custom-avatar sync is a storage-lifecycle problem, not a size one. Blockers: harden generation (<code>--verify-jwt</code> + per-uid caps), server-side poke gating + non-activating overlay, reconnect/sleep-wake/stale-ghost. Ship a thin v2.0; defer custom-avatar sync, multi-room, cosmetics.</p>
+<p class="muted">Full reviews: <code>PRD-reviews/v2-product-review.md</code> · <code>PRD-reviews/v2-eng-review.md</code></p>
+</section>
+
+<footer>Digital Pat v2 — Rooms · PRD rev. 2 · <span class="muted">apps/digital-pat/PRD-v2-rooms.md</span></footer>
+</div>
+</body>
+</html>

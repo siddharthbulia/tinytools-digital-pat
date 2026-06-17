@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRD — Digital Pat 🐱</title>
+<style>
+  :root{
+    --bg:#fdf6f9;
+    --card:#ffffff;
+    --ink:#2b2233;
+    --muted:#7a6f85;
+    --accent:#ff8fb1;      /* soft pink */
+    --accent2:#8fd3ff;     /* soft blue */
+    --accent3:#c9a7ff;     /* soft lilac */
+    --good:#5fcf8e;
+    --warn:#ffb454;
+    --line:#f0e3ec;
+    --code:#fbeef4;
+    --shadow:0 8px 30px rgba(180,120,160,.12);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% 8%,rgba(255,143,177,.10),transparent 38%),radial-gradient(circle at 88% 18%,rgba(143,211,255,.12),transparent 40%);
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:40px 24px 80px}
+
+  /* hero */
+  header.hero{
+    background:linear-gradient(135deg,#fff,#fff6fb);
+    border:1px solid var(--line);border-radius:28px;
+    padding:38px 40px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  header.hero:before{content:"🐱";position:absolute;right:26px;top:14px;font-size:120px;opacity:.10;transform:rotate(-8deg)}
+  .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:#b5567e;background:#ffe7f0;padding:5px 12px;border-radius:999px}
+  h1{font-size:48px;line-height:1.05;margin:14px 0 6px;letter-spacing:-.02em}
+  h1 .pat{background:linear-gradient(90deg,var(--accent),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-size:18px;color:var(--muted);margin:0 0 18px;max-width:640px}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .pill{font-size:12.5px;font-weight:600;background:#fff;border:1px solid var(--line);
+    padding:6px 12px;border-radius:999px;color:var(--ink)}
+  .pill.free{background:#eafaf0;border-color:#cdeed9;color:#2f8a59}
+  .pill.pro{background:#f3ecff;border-color:#e2d3ff;color:#6f44c9}
+
+  .lede{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 26px;
+    margin:22px 0;box-shadow:var(--shadow);font-size:17px;color:#473c52}
+
+  /* toc */
+  nav.toc{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 26px;margin:22px 0 36px;box-shadow:var(--shadow)}
+  nav.toc h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 12px}
+  nav.toc ol{margin:0;padding:0;list-style:none;counter-reset:toc;columns:2;column-gap:32px}
+  nav.toc li{counter-increment:toc;margin:0 0 9px;break-inside:avoid}
+  nav.toc a{color:var(--ink);text-decoration:none;font-weight:500;display:flex;gap:10px;align-items:baseline}
+  nav.toc a:before{content:counter(toc);font-size:12px;font-weight:800;color:var(--accent);background:#ffe7f0;border-radius:8px;min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  nav.toc a:hover{color:var(--accent)}
+
+  section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 32px;margin:18px 0;box-shadow:var(--shadow)}
+  h2.sec{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:0 0 4px;font-weight:800}
+  h3.title{font-size:26px;margin:0 0 14px;letter-spacing:-.01em}
+  h4{font-size:17px;margin:22px 0 8px;color:#3a2f45}
+  p{margin:0 0 12px}
+  ul,ol{margin:0 0 12px;padding-left:22px}
+  li{margin:0 0 7px}
+  strong{color:#1f1828}
+  em{color:#6a5d76}
+  a{color:#c65b8a}
+  code{background:var(--code);color:#b5346f;padding:2px 7px;border-radius:7px;font-size:13.5px;font-family:"SF Mono",ui-monospace,Menlo,monospace}
+
+  blockquote{margin:14px 0;padding:14px 18px;background:#f7f1fb;border-left:4px solid var(--accent3);border-radius:0 14px 14px 0;color:#52465e}
+
+  table{width:100%;border-collapse:separate;border-spacing:0;margin:14px 0;font-size:14.5px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th{background:#fbeef4;text-align:left;padding:11px 13px;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:#9a4f74;font-weight:700}
+  td{padding:11px 13px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#fffafd}
+  td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .tier{border-radius:16px;padding:20px 22px}
+  .tier.free{background:#f1fbf5;border:1px solid #d4eede}
+  .tier.pro{background:#f6f0ff;border:1px solid #e4d6ff}
+  .tier h4{margin-top:0}
+  .price{font-size:22px;font-weight:800;color:#6f44c9}
+
+  .risk{display:flex;gap:14px;padding:14px 0;border-top:1px dashed var(--line)}
+  .risk:first-of-type{border-top:none}
+  .risk .num{font-size:20px;font-weight:900;color:var(--warn);flex:none;width:30px}
+
+  .cut{background:#fff6f6;border:1px solid #ffe0e0;border-radius:12px;padding:6px 12px;display:inline-block;margin:3px 4px 3px 0;font-size:13.5px;color:#c0556a;font-weight:600}
+
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:40px}
+  .deviation{background:#fff8ec;border:1px solid #ffe6c0;border-radius:14px;padding:12px 16px;font-size:14.5px;color:#8a5a16}
+  @media(max-width:680px){.grid2{grid-template-columns:1fr}nav.toc ol{columns:1}h1{font-size:36px}header.hero{padding:28px 24px}section{padding:22px 20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">PRD · app-factory · v1</span>
+    <h1>Digital&nbsp;<span class="pat">Pat</span> 🐱</h1>
+    <p class="tagline">A tiny kitten that lives on your screen, reacts to whatever you're doing, and tells you where your day went — without ever reading your content.</p>
+    <div class="pills">
+      <span class="pill">macOS · Swift + AppKit</span>
+      <span class="pill">Floating desktop pet</span>
+      <span class="pill">Zero permissions · zero network</span>
+      <span class="pill free">Free: the pet + today view</span>
+      <span class="pill pro">Pro: $14.99 one-time</span>
+    </div>
+  </header>
+
+  <div class="lede">
+    Digital Pat is a tiny <strong>kitten</strong> that lives in the top-right corner of your Mac screen and quietly reacts to whatever you're doing. Open Chrome and it gets to work; jump on Zoom and it throws on a little blazer; fire up Claude or a terminal and it puts on glasses to "study." It never reads your content — it only knows <em>which app is in front</em> — and at the end of the day it shows you a cute breakdown of where your hours went. You can pat it anytime and it'll purr and smile back (you pat Pat). It's an ambient, low-stakes companion for people who spend all day at a laptop and want a friendlier screen.
+  </div>
+
+  <nav class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#user">Target user</a></li>
+      <li><a href="#pitch">The 30-second pitch</a></li>
+      <li><a href="#wedge">Wedge feature</a></li>
+      <li><a href="#box">What's in the box</a></li>
+      <li><a href="#ux">UX</a></li>
+      <li><a href="#sprites">The sprites / mood states</a></li>
+      <li><a href="#tech">Tech sketch</a></li>
+      <li><a href="#metrics">Success metrics</a></li>
+      <li><a href="#risks">Risks</a></li>
+      <li><a href="#nongoals">Non-goals &amp; cuts</a></li>
+    </ol>
+  </nav>
+
+  <section id="problem">
+    <h2 class="sec">01</h2><h3 class="title">Problem</h3>
+    <p>People who work on a laptop all day stare at a focused, joyless screen for 8–10 hours. Two small, real pains stack up:</p>
+    <ol>
+      <li><strong>The screen is lonely and sterile.</strong> There's no warmth, no companion, nothing that makes the workday feel a little less like a void. Gen-Z especially decorates everything (phone, desktop, Notion) for <em>vibes</em> — the Mac desktop is the last un-decorated surface.</li>
+      <li><strong>Nobody actually knows where their day went.</strong> "I was busy all day" but doing <em>what</em>? Time-tracking tools (RescueTime, Timing) exist but they feel like surveillance dashboards — heavy, guilt-inducing, enterprise-flavored. Nobody opens them for fun.</li>
+    </ol>
+    <blockquote><strong>Concrete moment:</strong> It's 6pm. Aanya, a 24-year-old product designer, closes her laptop and has no idea whether she spent the day in Figma or doom-scrolling Slack. She'd never install a "productivity tracker" — that sounds like a chore — but she <em>would</em> keep a cute kitten on her screen that happened to tell her, at the end of the day, "you spent 4h in design mode 🎨 and 2h in meetings 👔."</blockquote>
+  </section>
+
+  <section id="user">
+    <h2 class="sec">02</h2><h3 class="title">Target user</h3>
+    <p><strong>Aanya, 24, product designer at a startup.</strong> Lives on her MacBook. Has a curated desktop wallpaper, Spotify always open, decorates her Notion with emojis. Uses Figma, Chrome, Slack, Zoom, Notion all day. She's tried a time tracker once, found it clinical and guilt-trippy, deleted it in a week. She likes Tamagotchi nostalgia, desktop pets, and lo-fi "study with me" streams. She wants her screen to feel <em>alive</em>, and she'd love a gentle, non-judgmental mirror of her day.</p>
+    <h4>Anti-personas (NOT building for)</h4>
+    <ul>
+      <li>The serious productivity optimizer who wants billable-hour reports, Pomodoro enforcement, and CSV exports for their manager. (That's RescueTime. We are the opposite vibe.)</li>
+      <li>Privacy-hostile use cases — we will never read screen content, keystrokes, or window titles. If a feature needs that, it's out.</li>
+      <li>Windows/Linux users (v1 is Mac-only).</li>
+    </ul>
+  </section>
+
+  <section id="pitch">
+    <h2 class="sec">03</h2><h3 class="title">The 30-second pitch</h3>
+    <p>A cute kitten lives in the corner of your screen and reacts to whatever app you're using — coding, in meetings, browsing, writing. Pat it when you need a friend, and at the end of the day it shows you a sweet little summary of where your time went.</p>
+  </section>
+
+  <section id="wedge">
+    <h2 class="sec">04</h2><h3 class="title">Wedge feature</h3>
+    <p><strong>The kitten reacts, live, to your active app — and it's adorable.</strong> Within 30 seconds of installing, you switch from Chrome to Zoom and watch the kitten swap into a tiny blazer. That single "omg it noticed" moment is the entire hook. Everything else (summaries, history, skins) is bonus.</p>
+  </section>
+
+  <section id="box">
+    <h2 class="sec">05</h2><h3 class="title">What's in the box</h3>
+    <div class="grid2">
+      <div class="tier free">
+        <h4>🆓 Free — fully usable forever</h4>
+        <ul>
+          <li><strong>The pet itself.</strong> A kitten floating on top of all windows, top-right. Frameless, transparent, always-on-top, click-to-pat.</li>
+          <li><strong>Live activity reactions.</strong> Detects the frontmost app and switches into the matching mood state (sprite + outfit + animation + caption).</li>
+          <li><strong>Pat interaction.</strong> Click → purr, smile, floating hearts, a one-line caption.</li>
+          <li><strong>Today view.</strong> Total active time + breakdown by mood category, cute labels. Resets at midnight.</li>
+          <li><strong>Drag to reposition</strong> — remembers where you put it.</li>
+          <li><strong>Launch at login</strong> — on by default, one toggle off.</li>
+          <li><strong>Quiet/hide toggle</strong> — hotkey + tray item; keeps logging quietly.</li>
+          <li><strong>Zero permissions, zero network.</strong> Works instantly. Nothing leaves your machine.</li>
+        </ul>
+      </div>
+      <div class="tier pro">
+        <h4>⭐ Pro — for the daily user <span class="price">$14.99</span> one-time</h4>
+        <ol>
+          <li><strong>History &amp; recaps.</strong> 7/30-day views, a weekly recap card ("this week: 18h coding, most 🐱 day was Tuesday"), calendar heatmap. <em>The natural upgrade trigger</em> — you love today, then want yesterday.</li>
+          <li><strong>The wardrobe.</strong> Alternate breeds/skins (orange tabby, calico, black cat, Siamese, + a puppy / red panda) and outfit packs (cozy hoodie, pixel/Y2K, sleep cap, party).</li>
+          <li><strong>Custom moods.</strong> Map your own apps to moods and edit captions ("Linear open → 'shipping mode 🚢'").</li>
+        </ol>
+        <p style="font-size:13.5px;color:#6a5d76;margin-bottom:0"><strong>Why one-time:</strong> a delight/vibe purchase, not a utility-ROI one. A subscription would feel gross and kill conversion. Impulse-priced like a phone-case skin pack; same band as other tinytools Pro tiers.</p>
+      </div>
+    </div>
+    <h4>Out of scope (explicitly)</h4>
+    <p>
+      <span class="cut">No reading screen content / titles / URLs / keystrokes — ever</span>
+      <span class="cut">No meditation / breaks / Pomodoro</span>
+      <span class="cut">No notifications / streaks / guilt</span>
+      <span class="cut">No sync / accounts / leaderboards</span>
+      <span class="cut">No AI captions in v1</span>
+      <span class="cut">No Windows / Linux</span>
+    </p>
+  </section>
+
+  <section id="ux">
+    <h2 class="sec">06</h2><h3 class="title">UX</h3>
+    <h4>Where it lives &amp; how it behaves</h4>
+    <div class="deviation">⚠️ <strong>One intentional break from the factory norm:</strong> this is a <strong>floating desktop pet</strong>, not a menu-bar popup. It keeps a tray icon for the boring stuff, but the pet is the star.</div>
+    <ul style="margin-top:14px">
+      <li>A small frameless, transparent, always-on-top window (~120×120pt) anchored top-right by default, draggable, position remembered.</li>
+      <li>A <strong>menu-bar tray icon</strong> (🐱) for: open Today/recap, hide/show pet, settings, quit, upgrade.</li>
+      <li><strong>Click-through everywhere except the kitten</strong> — only its body is interactive (pat / drag).</li>
+      <li><strong>First launch:</strong> kitten fades in, waves a paw, one-time bubble: "hi! i'm Pat 🐱 i'll hang out while you work. pat me anytime!" No setup, no wizard, no permission prompts.</li>
+    </ul>
+    <h4>Interactions</h4>
+    <ul>
+      <li><strong>Pat (single click):</strong> purr + ears perk + floating hearts + canned caption. Tiny cooldown so mashing doesn't spam.</li>
+      <li><strong>Drag:</strong> reposition; loose edge-snapping; remembers spot.</li>
+      <li><strong>Hover:</strong> current-mood speech bubble for ~2s.</li>
+      <li><strong>Click bubble / tray → Today:</strong> the small summary card.</li>
+      <li><strong>Hide:</strong> hotkey (default ⌥⌘P) or tray toggle → fades out, keeps logging.</li>
+    </ul>
+    <h4>Unhappy paths</h4>
+    <ul>
+      <li><strong>Can't read frontmost app</strong> (shouldn't happen) → default kitten, keep running.</li>
+      <li><strong>Multiple displays</strong> → stays on remembered display; if gone, reset to primary top-right.</li>
+      <li><strong>Fullscreen / Space change</strong> → follows the active Space, stays on top.</li>
+      <li><strong>Free user opens history</strong> → friendly upsell card ("Pat only remembers today on free — unlock history ✨").</li>
+    </ul>
+  </section>
+
+  <section id="sprites">
+    <h2 class="sec">07</h2><h3 class="title">The sprites / mood states <span style="font-size:15px;color:var(--muted);font-weight:500">— the heart of the app</span></h3>
+    <p><strong>Art direction:</strong> soft, round, chibi kitten. Gen-Z / cozy-funky. Big head, tiny body, huge sparkly eyes, little triangle ears, stubby paws, an expressive tail. Thick outlines, pastel accents, squishy proportions, subtle loop animations (breathing, blinking, ear-twitch, tail-flick) so it never looks frozen.</p>
+    <blockquote>Exact look gets locked in the <strong>design session</strong> — this table is the spec, not the final art.</blockquote>
+    <table>
+      <thead><tr><th>#</th><th>Mood</th><th>Triggered by (frontmost app)</th><th>Look / outfit</th><th>Animation</th><th>Caption</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Coding</strong> 👩‍💻</td><td>VS Code, Xcode, Terminal, iTerm, Cursor, Zed</td><td>Tiny glasses, hoodie, at a tiny laptop</td><td>Typing paws, head-bob, tail flick</td><td>"locked in 💻"</td></tr>
+        <tr><td>2</td><td><strong>Thinking</strong> 🤔</td><td>Claude, ChatGPT, Perplexity, Notion AI, PDFs</td><td>Round glasses + book / lightbulb bubble</td><td>Tilts head, taps chin, lightbulb blinks</td><td>"big brain time 💡"</td></tr>
+        <tr><td>3</td><td><strong>Meeting</strong> 👔</td><td>Zoom, Meet, Teams, Slack huddle, FaceTime</td><td>Smart blazer over the fur</td><td>Sits up straight, ears perked, nods</td><td>"in a call 🎧"</td></tr>
+        <tr><td>4</td><td><strong>Communicating</strong> 💬</td><td>Slack, Mail, Messages, Discord, Gmail</td><td>Headphones + tiny speech bubbles</td><td>Paws "typing", bubbles float</td><td>"replying… 📨"</td></tr>
+        <tr><td>5</td><td><strong>Browsing</strong> 🌐</td><td>Chrome, Safari, Arc, Firefox</td><td>Casual, holding a tiny phone</td><td>Lazy scroll-swipe, slow tail sway</td><td>"just browsing 👀"</td></tr>
+        <tr><td>6</td><td><strong>Creating</strong> 🎨</td><td>Figma, Photoshop, Sketch, Canva, Final Cut</td><td>Beret + tiny paintbrush</td><td>Dabs a canvas, ears twitch</td><td>"in the zone 🎨"</td></tr>
+        <tr><td>7</td><td><strong>Vibing</strong> 🎧</td><td>Spotify, Apple Music, YouTube, Netflix</td><td>Big headphones, eyes closed</td><td>Head-bob, tail taps, notes float</td><td>"vibing 🎶"</td></tr>
+        <tr><td>8</td><td><strong>Idle</strong> 😴</td><td>No input for N min, or screen locked</td><td>Curled into a loaf, nightcap, "z z z"</td><td>Slow breathing, snore bubble, ear twitch</td><td>"napping 💤"</td></tr>
+        <tr><td>9</td><td><strong>Pat</strong> ♡</td><td>(any click on the kitten)</td><td>Sparkly eyes, blush, ears perked</td><td>Purr + hop + floating hearts</td><td>"♡ hehe"</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Fallback:</strong> an unmapped app → a neutral "default kitten" (state 0): sitting, blinking, tail swaying, breathing, caption "👋". Unknown apps never break the pet.</p>
+    <blockquote><strong>Implementation note:</strong> each mood = one sprite sheet (idle loop + transition-in). 8 moods + default + pat ≈ 10 sprite sheets for v1. Simple frame loops, not physics. Free = the base kitten across all moods; Pro skins re-skin the same slots so we don't multiply art per skin × mood.</blockquote>
+  </section>
+
+  <section id="tech">
+    <h2 class="sec">08</h2><h3 class="title">Tech sketch</h3>
+    <ul>
+      <li><strong>Stack:</strong> Native Swift + AppKit — best for a borderless always-on-top transparent window, sprite animation, low memory, tiny binary. Window-mode app: borderless floating panel <em>and</em> a menu-bar status item, but no Dock icon (overrides the template's <code>LSUIElement</code> norm).</li>
+      <li><strong>Activity detection:</strong> <code>NSWorkspace.shared.frontmostApplication</code> + <code>didActivateApplicationNotification</code> → active app's bundle id &amp; name. <strong>No Accessibility, no Screen Recording, no Full Disk Access.</strong> Idle via <code>CGEventSourceSecondsSinceLastEventType</code> (no input-monitoring permission).</li>
+      <li><strong>App → mood mapping:</strong> a static bundle-ID → mood dictionary shipped in the app (<code>com.google.Chrome → Browsing</code>). Pro custom overrides stored locally. Unknown ids → default kitten.</li>
+      <li><strong>Sprite rendering:</strong> sprite-sheet PNGs, frame-by-frame in a layer-backed view (or tiny SpriteKit scene). No web view, no Electron. Low FPS for idle loops.</li>
+      <li><strong>Persistence:</strong> local only. Today's tally in memory + small JSON/SQLite in <code>~/Library/Application Support/DigitalPat/</code>. Pro history = retaining the file across days + aggregation. Position/settings in <code>UserDefaults</code>.</li>
+      <li><strong>Background work:</strong> lightweight event-driven loop accumulating seconds per mood whenever the app is open (= always). Negligible CPU at idle.</li>
+      <li><strong>License-gating:</strong> locally-validated signed key (no network roundtrip), gating history/recaps, wardrobe, custom moods. Same pattern as other Pro apps in the factory.</li>
+      <li><strong>Permissions needed:</strong> none beyond default. (A selling point: "no scary permission prompts.")</li>
+    </ul>
+  </section>
+
+  <section id="metrics">
+    <h2 class="sec">09</h2><h3 class="title">Success metrics</h3>
+    <ul>
+      <li><strong>I keep Pat on my own screen for 3 weeks straight</strong> without hiding/uninstalling out of annoyance. (The real dummy test for an ambient app: does it survive the irritation threshold?)</li>
+      <li><strong>The pat interaction gets used unprompted</strong> — ≥ 3×/day without being told to. Signals companion, not wallpaper.</li>
+      <li><strong>5 friends install it; ≥ 2 still running after a week; ≥ 1 buys Pro</strong> (almost certainly for the wardrobe).</li>
+      <li><strong>Lands on r/macapps or design Twitter/TikTok with a "this is so cute" reaction</strong> — virality is the GTM; a clip of the kitten swapping outfits is the ad.</li>
+    </ul>
+  </section>
+
+  <section id="risks">
+    <h2 class="sec">10</h2><h3 class="title">Risks</h3>
+    <div class="risk"><div class="num">1</div><div><strong>Annoyance / occlusion.</strong> An always-on-top corner thing can cover UI and get irritating fast. <em>Mitigations:</em> small footprint, click-through except the body, instant hide hotkey, draggable, edge-snapping, low-key idle motion. <strong>Kill criterion:</strong> if I reach for hide more than a couple times a day in week 1, the default behavior is wrong.</div></div>
+    <div class="risk"><div class="num">2</div><div><strong>"It's a toy, not worth paying for."</strong> Cuteness alone may not convert to $15. <em>Mitigation:</em> the wardrobe is a proven cosmetic-purchase pattern for this audience; history/recaps add a keep-reason. If conversion is dead, the lever is <em>more/better skins</em>, not more "productivity" features (which would betray the vibe).</div></div>
+    <div class="risk"><div class="num">3</div><div><strong>Art quality is the whole product.</strong> If the kitten looks like generic AI slop or animations are stiff, the wedge fails and nothing else matters. <em>Mitigation:</em> treat sprite art as the #1 deliverable; get the base kitten + 3 hero moods (coding, meeting, idle) genuinely charming before breadth. <strong>Kill criterion:</strong> if the hero sprites don't make a test user smile on sight, stop and redo the art.</div></div>
+  </section>
+
+  <section id="nongoals">
+    <h2 class="sec">11</h2><h3 class="title">Non-goals &amp; explicit cuts</h3>
+    <ul>
+      <li><strong>No AI commentary in v1.</strong> Captions are a curated, hand-written canned set per mood. LLM quips are a tempting v2, but v1 must be fully local, offline, zero-cost, instant — and canned lines are funnier hand-written anyway.</li>
+      <li><strong>No wellness/meditation/nudge layer.</strong> Explicitly cut. Pat observes and vibes; it does not coach.</li>
+      <li><strong>No content awareness.</strong> Never <em>what's</em> on screen, only <em>which app</em>. A permanent product principle — the trust foundation.</li>
+      <li><strong>No sync/accounts.</strong> Local-only keeps it private, simple, backend-free. Revisit only if multi-device demand is real.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Digital Pat — PRD v1 · app-factory · next step: 2-reviewer gate (product + engineering), then a design session to lock the kitten 🐱
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Digital Pat</title>
+        <item>
+            <title>2.8.1</title>
+            <description><![CDATA[Freshened up Chahek's pixel art, plus under-the-hood groundwork for friend-specific features coming soon.]]></description>
+            <pubDate>Wed, 17 Jun 2026 14:25:08 +0530</pubDate>
+            <sparkle:version>2.8.1</sparkle:version>
+            <sparkle:shortVersionString>2.8.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.1.dmg" length="6432658" type="application/octet-stream" sparkle:edSignature="2lv/U9yXaBUo9gdUQeAwLIiO4zRmRliErNmkBFbt8go6L4maUtVpEedidYybSML/qY1MV/5Ev2iaNUHAZrnxAg=="/>
+        </item>
+        <item>
+            <title>2.8.0</title>
+            <description><![CDATA[Two new characters — Anay and Shikhar — join the lineup (24 to choose from). And your pet's controls now live on the pet itself: right-click your own pet for Hide, Roaming, Cursor mode, and Character. The menu-bar icon stays for friends, updates, and settings.]]></description>
+            <pubDate>Wed, 17 Jun 2026 11:23:43 +0530</pubDate>
+            <sparkle:version>2.8.0</sparkle:version>
+            <sparkle:shortVersionString>2.8.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.0.dmg" length="6433630" type="application/octet-stream" sparkle:edSignature="uf7N5Gvhh+Pp8BHI34ig9JAxAM8P3I7oZmifAnxp9V2vFwJPikXTBQs3NTkzn952Mfm49e9S/oNGPnpVgTczDg=="/>
+        </item>
+        <item>
+            <title>2.7.2</title>
+            <description><![CDATA[New: Reset Pat… (start over). Right-click the menu-bar 🐱 → "Reset Pat…" to remove yourself and all your friendships and begin fresh with a new pet — a clean way to start over or hand the app to someone else.]]></description>
+            <pubDate>Wed, 17 Jun 2026 02:48:20 +0530</pubDate>
+            <sparkle:version>2.7.2</sparkle:version>
+            <sparkle:shortVersionString>2.7.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.7.2.dmg" length="6363098" type="application/octet-stream" sparkle:edSignature="AKzdSSYJuyQrZcBeRhLH2sVSm0UjV1XXkhQ+TAnK7nppKPBxv+py0zJ4gJoFZiml9FWuKkocO2x2qxLi6hD5Bw=="/>
+        </item>
+        <item>
+            <title>2.7.1</title>
+            <description><![CDATA[Friends stay in sync more reliably. Fixed a bug where a friend could show as "napping/away" while they were actually online (a clock-difference between Macs), and your pets now reconnect on their own after a Wi-Fi blip — no relaunch needed. Added a ↻ Refresh button in the Friends window to re-sync on demand.]]></description>
+            <pubDate>Wed, 17 Jun 2026 02:29:53 +0530</pubDate>
+            <sparkle:version>2.7.1</sparkle:version>
+            <sparkle:shortVersionString>2.7.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.7.1.dmg" length="6349334" type="application/octet-stream" sparkle:edSignature="3EoDT1Ay8wzfgnbxW3v6cxutIHYuLtHAP/5fQh/fp1/0iX8SSqWz0uWnwgo9jsgOiRjfjH+/+ptDppv6YAaUAA=="/>
+        </item>
+        <item>
+            <title>2.7.0</title>
+            <description><![CDATA[New cursor mode: <b>Chipkoo</b> 🫶 — your pet clings to the cursor and follows it everywhere, until someone pats it. Set it from the menu-bar → Cursor. It works with friends too: your clinging pet hops onto their cursor, and a pat from anyone gently lets it go.]]></description>
+            <pubDate>Wed, 17 Jun 2026 01:20:41 +0530</pubDate>
+            <sparkle:version>2.7.0</sparkle:version>
+            <sparkle:shortVersionString>2.7.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.7.0.dmg" length="6328602" type="application/octet-stream" sparkle:edSignature="W3vFes4/qjhkD/VxMGN6q00qONy2RfnS3Pmn7+E91T385V8zhxMdOwox1JF/mMmTNKAdrLKZG7f1bfXAtqfNCA=="/>
+        </item>
+        <item>
+            <title>2.6.1</title>
+            <description><![CDATA[Reliability hardening for friends, verified by an exhaustive multi-device test suite (70 end-to-end checks): unfriending no longer pings every other person's app, and your friend graph stays perfectly in sync across everyone, all the time.]]></description>
+            <pubDate>Wed, 17 Jun 2026 00:03:47 +0530</pubDate>
+            <sparkle:version>2.6.1</sparkle:version>
+            <sparkle:shortVersionString>2.6.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.6.1.dmg" length="6294090" type="application/octet-stream" sparkle:edSignature="peGs7GK3jMBclJarI2XWLCjgcva0kPj7sY7s/GjMV2NHxuB7meJwk5OgnZIcsd4pZo1QlYO9jgRhSq9R5VkdAA=="/>
+        </item>
+        <item>
+            <title>2.6.0</title>
+            <description><![CDATA[Friends, in perfect sync. Adding a friend now shows up on both desktops instantly — no restart. Their mood and character (and yours) update live across every friend, you can paste an invite code, and your character pick during setup applies right away.]]></description>
+            <pubDate>Tue, 16 Jun 2026 22:51:08 +0530</pubDate>
+            <sparkle:version>2.6.0</sparkle:version>
+            <sparkle:shortVersionString>2.6.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.6.0.dmg" length="6292142" type="application/octet-stream" sparkle:edSignature="jDgs8loZM6X8EQFMSXjksABE7lBWzSpwWJXcNCd2mCUMNAPTE+O40hB+FGQqg0IIY9671CwgBDhAfg0nWGtADw=="/>
+        </item>
+        <item>
+            <title>2.5.1</title>
+            <description><![CDATA[Smoother Push: your pet now flees the cursor in a smooth, continuous glide and slides along walls instead of darting around. No more erratic movement.]]></description>
+            <pubDate>Tue, 16 Jun 2026 22:24:45 +0530</pubDate>
+            <sparkle:version>2.5.1</sparkle:version>
+            <sparkle:shortVersionString>2.5.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.5.1.dmg" length="6281947" type="application/octet-stream" sparkle:edSignature="GGbZpBkr9rUFcC+CmYpAFJPAVee77jIOOA8iKC6NOKMQfRu1Sj6AT16SxQ1XzO7Q3+DoQej4AugTcilOwDkhBw=="/>
+        </item>
+        <item>
+            <title>2.5.0</title>
+            <description><![CDATA[Pat is now always free-flowing — she follows or flees your cursor and you drag her anywhere. New "Keep roaming" toggle lets her wander the whole screen (corners, middle, edges). Push & Attract now work at a comfortable close range, and she can never get trapped in a corner.]]></description>
+            <pubDate>Tue, 16 Jun 2026 22:16:03 +0530</pubDate>
+            <sparkle:version>2.5.0</sparkle:version>
+            <sparkle:shortVersionString>2.5.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.5.0.dmg" length="6285814" type="application/octet-stream" sparkle:edSignature="moJ40P6E+kDBYWImYwWhteI6bsiXsQm/YlcGiKYI16JkhqdkdM6VKyrrZZ3M+h4eWDffYewx6MskfIjsaDqiBA=="/>
+        </item>
+        <item>
+            <title>2.4.0</title>
+            <description><![CDATA[<b>Pets play with your cursor.</b> Pick a Cursor mode — Attract (your pet comes to your cursor), Push (it flees), or Neutral. Your mode syncs to friends, so their pet on your desktop reacts to your cursor too. Right-click → Cursor.]]></description>
+            <pubDate>Tue, 16 Jun 2026 21:52:07 +0530</pubDate>
+            <sparkle:version>2.4.0</sparkle:version>
+            <sparkle:shortVersionString>2.4.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.4.0.dmg" length="6280707" type="application/octet-stream" sparkle:edSignature="iUBUbI9OsL/VjuMECc08frEUJrmn9j+c4ohoGbP4xwlT7ERobQf8LIH4OeyXhAKOBk3VsUGKAluJ1Cq+ntfRBQ=="/>
+        </item>
+        <item>
+            <title>2.3.1</title>
+            <description><![CDATA[Reliability pass: fixed a bug that kept friends' live moods from syncing, kept your friends from vanishing on a network blip, and tidied the app. Add a friend and you'll see each other change in real time.]]></description>
+            <pubDate>Tue, 16 Jun 2026 17:28:33 +0530</pubDate>
+            <sparkle:version>2.3.1</sparkle:version>
+            <sparkle:shortVersionString>2.3.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.3.1.dmg" length="6255972" type="application/octet-stream" sparkle:edSignature="BQrMBXy9MZvjsVcz85awrx/h1RT07P7e9S/NO0sqDzm3fUkkbVx6k9FKs/bP1/kmbtspBvPYnjfXKT62K5T9AQ=="/>
+        </item>
+        <item>
+            <title>2.3.0</title>
+            <description><![CDATA[<b>Friends, reimagined.</b> No more rooms or codes — just add a friend with an invite, and your pixel selves live on each other's desktops, always there, changing with your day. Private by design (only friends see you).]]></description>
+            <pubDate>Tue, 16 Jun 2026 16:42:56 +0530</pubDate>
+            <sparkle:version>2.3.0</sparkle:version>
+            <sparkle:shortVersionString>2.3.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.3.0.dmg" length="6257587" type="application/octet-stream" sparkle:edSignature="ICVdEPXmUHF0ZOhFmcMPOG4dlCsBgmktGdRoLIFuGLdRV1tpWmYq2XJUz0o/t8CVSyHswg+VKV7Y45/UY0VHBA=="/>
+        </item>
+        <item>
+            <title>2.2.1</title>
+            <description><![CDATA[Smoother friends: dragging a friend around your desktop is now buttery (no more jitter), and when you change your own character your friends see it update live.]]></description>
+            <pubDate>Tue, 16 Jun 2026 01:50:31 +0530</pubDate>
+            <sparkle:version>2.2.1</sparkle:version>
+            <sparkle:shortVersionString>2.2.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.2.1.dmg" length="6237956" type="application/octet-stream" sparkle:edSignature="1TRPWy+Y88/CpX731J1eee37OEPFEKP0PMoSgQfLgGfbU2anej3FGciZwi1602m6sD4s4+AalaIPw2J9WMbEBA=="/>
+        </item>
+        <item>
+            <title>2.2.0</title>
+            <description><![CDATA[<b>Friends are real pets now.</b> Bring a friend onto your desktop and they're a full Digital Pat — blinking, reacting, changing with their day — and you can pat them just like your own. Simpler and cuter.]]></description>
+            <pubDate>Tue, 16 Jun 2026 01:30:21 +0530</pubDate>
+            <sparkle:version>2.2.0</sparkle:version>
+            <sparkle:shortVersionString>2.2.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.2.0.dmg" length="6236037" type="application/octet-stream" sparkle:edSignature="8ArdVnNrULvAyn3lHpASOYbzIxj/v15wVvQO4ErSVmuGFC44wMeIGYq5nIyPsiLHHTQwyGd/sWKF28kKyExPDw=="/>
+        </item>
+        <item>
+            <title>2.1.1</title>
+            <description><![CDATA[<b>The Room is a hangout now.</b> Friends sit together as a cute group — tap one to bring them onto your desktop, then pat them (💗) and poke them just like your own pet. Cleaner Room, simpler everything.]]></description>
+            <pubDate>Tue, 16 Jun 2026 01:13:22 +0530</pubDate>
+            <sparkle:version>2.1.1</sparkle:version>
+            <sparkle:shortVersionString>2.1.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.1.1.dmg" length="6349687" type="application/octet-stream" sparkle:edSignature="VrV6pXEfCDQzcO+v0zzuvhFuCr7qqN4/ig2qWoaEn70gp84rVL+ieRfug6i+XiYzVjiVfp9OZc5bBnSFHxi6Dg=="/>
+        </item>
+        <item>
+            <title>2.1.0</title>
+            <description><![CDATA[<b>Rooms, refined.</b> Friends now live in the Room — pull the ones you want onto your desktop (your "deck"), drag them around, and poke each other right where they are. Switch rooms anytime. Simpler, cuter, and the room-empties bug is fixed.]]></description>
+            <pubDate>Tue, 16 Jun 2026 00:58:47 +0530</pubDate>
+            <sparkle:version>2.1.0</sparkle:version>
+            <sparkle:shortVersionString>2.1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.1.0.dmg" length="6361170" type="application/octet-stream" sparkle:edSignature="vhDLNoT068EuseQ/VITXEme0RouiFC2EL9HH+8zcxjIREvePPXd9lCHi7qjhmq6RuXqTOFFQMessYbuZK6+BDg=="/>
+        </item>
+        <item>
+            <title>2.0.0</title>
+            <description><![CDATA[<b>Digital Pat goes multiplayer!</b> Join a Room, see your friends' little buddies, and poke each other to say hi. Plus: characters now generate without needing your own API key.]]></description>
+            <pubDate>Tue, 16 Jun 2026 00:19:38 +0530</pubDate>
+            <sparkle:version>2.0.0</sparkle:version>
+            <sparkle:shortVersionString>2.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.0.0.dmg" length="6353054" type="application/octet-stream" sparkle:edSignature="E3UWT61i6hDgT1Rs56rtj1qXne0YuH9B1fsxyI22YsgI8mVnh6hHjHCeSmOS/bpwQvQDKhdVOod1E8dZC/wmCg=="/>
+        </item>
+        <item>
+            <title>1.17.0</title>
+            <pubDate>Mon, 15 Jun 2026 23:18:02 +0530</pubDate>
+            <sparkle:version>1.17.0</sparkle:version>
+            <sparkle:shortVersionString>1.17.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.17.0.dmg" length="2585678" type="application/octet-stream" sparkle:edSignature="E1Y/dYbjkLN6vRy6gXdYKv4k5wJzHEHlAYnQbgIZkOD7VSRX8cMIYw/8EIWb/HlDRWYpuEF5x5/UH+R5DiorAw=="/>
+        </item>
+        <item>
+            <title>1.16.0</title>
+            <pubDate>Mon, 15 Jun 2026 22:54:34 +0530</pubDate>
+            <sparkle:version>1.16.0</sparkle:version>
+            <sparkle:shortVersionString>1.16.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.16.0.dmg" length="2604983" type="application/octet-stream" sparkle:edSignature="pWTZnIHOczQ93c8fxa9UwfhUV8NeLUtSr5aRXMZUdoQU0J7cbg37HN5iLQIUdYhEXXEFWl8DmTzYy1RXVRbzDg=="/>
+        </item>
+        <item>
+            <title>1.15.0</title>
+            <pubDate>Mon, 15 Jun 2026 22:36:41 +0530</pubDate>
+            <sparkle:version>1.15.0</sparkle:version>
+            <sparkle:shortVersionString>1.15.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.15.0.dmg" length="2632717" type="application/octet-stream" sparkle:edSignature="u1R8YL+Ej2wfHgxuWKtEDV+cqJKj2oY0bz57AuZ4aNVlsbTvKzx2GsrHXWTsreOYI0y0YFGHFcUqkhrth+JWAg=="/>
+        </item>
+        <item>
+            <title>1.14.0</title>
+            <pubDate>Mon, 15 Jun 2026 19:52:50 +0530</pubDate>
+            <sparkle:version>1.14.0</sparkle:version>
+            <sparkle:shortVersionString>1.14.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.14.0.dmg" length="2006851" type="application/octet-stream" sparkle:edSignature="7GTottgMm7c2FsSb7Ew8QCYpzNLdp+CX5Q4uRbwTa+g7qlIMuBzkT09lgfvjuI/9fvaG8Ou37b/zlmE44LgFAg=="/>
+            <sparkle:deltas>
+                <enclosure url="https://digital-pat.vercel.app/downloads/Digital%20Pat1.14.0-1.13.0.delta" sparkle:deltaFrom="1.13.0" length="101970" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="+q/BS6kyBhTtk88cH/gpLujEtjXY6x/clucrSiY+q2t4be+JTdwWVkNImhRX8N+g3LnFULKCdeVFylYZ8vzBAg=="/>
+                <enclosure url="https://digital-pat.vercel.app/downloads/Digital%20Pat1.14.0-1.12.0.delta" sparkle:deltaFrom="1.12.0" length="194022" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="sUylLuxUXjXbV+QUPRC1534qvdg6ZHncagQuPR/chxFloQStfRgru+VrEkxpyu8NTQgaz70+IqTj1jQU410VDQ=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
+            <title>1.13.0</title>
+            <pubDate>Mon, 15 Jun 2026 19:45:25 +0530</pubDate>
+            <sparkle:version>1.13.0</sparkle:version>
+            <sparkle:shortVersionString>1.13.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.13.0.dmg" length="1942052" type="application/octet-stream" sparkle:edSignature="boa7UH+kt/cQHhRW9H0i1PXvhjNcg/FVlCbP1hPcDvSpiZcJkA9vqSWs3L9gninD5PVXWOaVz2WAkKlCDdjtCQ=="/>
+            <sparkle:deltas>
+                <enclosure url="https://digital-pat.vercel.app/downloads/Digital%20Pat1.13.0-1.12.0.delta" sparkle:deltaFrom="1.12.0" length="166214" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="4NzSa6h6q6xvj1PUoDsoGP5e4ygbWoFZxr9T0SW62gNuBDoLsHgsQJ9ulUWKTzXkvTSVLDnpXZhw25pPhKrJAw=="/>
+            </sparkle:deltas>
+        </item>
+        <item>
+            <title>1.12.0</title>
+            <pubDate>Mon, 15 Jun 2026 19:24:30 +0530</pubDate>
+            <sparkle:version>1.12.0</sparkle:version>
+            <sparkle:shortVersionString>1.12.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-1.12.0.dmg" length="1618311" type="application/octet-stream" sparkle:edSignature="D/j2aF9EAtPfqdaX1pGpwvBh2zrHwpg71znP78ldI1T6dy9yQ4R4JJa5zvdyzqlKgPM3Ys0JY8OXsoB5+EfnBg=="/>
+        </item>
+    </channel>
+</rss>

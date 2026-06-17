@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Digital Pat — Kitten Style QA</title>
+<style>
+  :root{ --bg:#fdf6f9; --ink:#2b2233; --muted:#8a7d95; --line:#f0e3ec; --accent:#ff8fb1; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    background-image:radial-gradient(circle at 10% 6%,rgba(255,143,177,.10),transparent 40%),radial-gradient(circle at 92% 14%,rgba(143,211,255,.12),transparent 42%);}
+  .wrap{max-width:1120px;margin:0 auto;padding:36px 24px 70px}
+  header{text-align:center;margin-bottom:8px}
+  h1{font-size:34px;margin:0 0 6px;letter-spacing:-.02em}
+  h1 .em{background:linear-gradient(90deg,#ff8fb1,#c9a7ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);margin:0 auto 28px;max-width:620px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px 22px 18px;
+    box-shadow:0 10px 30px rgba(180,120,160,.12);display:flex;gap:18px;align-items:center}
+  .stage{width:210px;height:220px;flex:none;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  .meta{min-width:0}
+  .num{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+  .name{font-size:20px;font-weight:800;margin:2px 0 6px;letter-spacing:-.01em}
+  .desc{color:#5a4f64;font-size:13.5px;margin:0 0 12px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .tag{font-size:11px;font-weight:600;background:#fbeef4;color:#a64f76;border-radius:999px;padding:3px 9px}
+  .pal{display:flex;gap:6px}
+  .sw{width:20px;height:20px;border-radius:6px;border:1px solid rgba(0,0,0,.08)}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:34px}
+  .moodnote{font-size:12px;color:var(--muted);margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Digital <span class="em">Pat</span> — kitten style QA 🐱</h1>
+    <p class="sub">Six takes on the baby kitten, all in the same neutral pose so you can compare the <em>vibe</em> directly. Pick one (or mix-and-match) and I'll port it into the live SwiftUI cat across every mood.</p>
+  </header>
+  <div class="grid">
+
+    <!-- 1. KAWAII PASTEL (current, refined) -->
+    <div class="card">
+      <div class="stage" style="background:linear-gradient(160deg,#fff6fb,#ffe9f2)">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <!-- tail -->
+          <path d="M150 176 C 188 172 192 126 170 112" fill="none" stroke="#6b5b53" stroke-width="20" stroke-linecap="round"/>
+          <path d="M150 176 C 188 172 192 126 170 112" fill="none" stroke="#fdf6ee" stroke-width="14" stroke-linecap="round"/>
+          <!-- body -->
+          <ellipse cx="100" cy="166" rx="50" ry="40" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3.5"/>
+          <ellipse cx="100" cy="174" rx="26" ry="26" fill="#fffdf8"/>
+          <ellipse cx="78" cy="196" rx="14" ry="9" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3"/>
+          <ellipse cx="122" cy="196" rx="14" ry="9" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3"/>
+          <!-- ears -->
+          <polygon points="52,72 68,16 98,60" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3.5" stroke-linejoin="round"/>
+          <polygon points="148,72 132,16 102,60" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3.5" stroke-linejoin="round"/>
+          <polygon points="64,60 72,30 88,56" fill="#ffc0d3"/>
+          <polygon points="136,60 128,30 112,56" fill="#ffc0d3"/>
+          <!-- head -->
+          <ellipse cx="100" cy="100" rx="54" ry="48" fill="#fdf6ee" stroke="#6b5b53" stroke-width="3.5"/>
+          <!-- blush -->
+          <ellipse cx="70" cy="110" rx="11" ry="7" fill="#ffb3c8" opacity=".7"/>
+          <ellipse cx="130" cy="110" rx="11" ry="7" fill="#ffb3c8" opacity=".7"/>
+          <!-- eyes -->
+          <ellipse cx="78" cy="100" rx="8" ry="11" fill="#3a2f3a"/>
+          <ellipse cx="122" cy="100" rx="8" ry="11" fill="#3a2f3a"/>
+          <circle cx="81" cy="95" r="3.2" fill="#fff"/><circle cx="125" cy="95" r="3.2" fill="#fff"/>
+          <circle cx="76" cy="103" r="1.6" fill="#fff"/><circle cx="120" cy="103" r="1.6" fill="#fff"/>
+          <!-- nose + mouth -->
+          <path d="M95 113 L105 113 L100 119 Z" fill="#ff8aa5"/>
+          <path d="M100 119 q-5 6 -10 2 M100 119 q5 6 10 2" fill="none" stroke="#6b5b53" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- whiskers -->
+          <g stroke="#cbb9b0" stroke-width="2" stroke-linecap="round">
+            <line x1="40" y1="104" x2="64" y2="106"/><line x1="40" y1="114" x2="64" y2="113"/>
+            <line x1="160" y1="104" x2="136" y2="106"/><line x1="160" y1="114" x2="136" y2="113"/>
+          </g>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 01</div>
+        <div class="name">Kawaii Pastel</div>
+        <p class="desc">The current direction, polished. Soft cream fur, warm brown outline, glossy double-highlight eyes, pink blush. Reads sweet and Tamagotchi-cozy.</p>
+        <div class="tags"><span class="tag">cozy</span><span class="tag">friendly</span><span class="tag">safe pick</span></div>
+        <div class="pal"><div class="sw" style="background:#fdf6ee"></div><div class="sw" style="background:#6b5b53"></div><div class="sw" style="background:#ffc0d3"></div><div class="sw" style="background:#3a2f3a"></div></div>
+      </div>
+    </div>
+
+    <!-- 2. CHONKY LOAF -->
+    <div class="card">
+      <div class="stage" style="background:linear-gradient(160deg,#f3f1f8,#e7e3f2)">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <!-- one big blob body+head (loaf) -->
+          <path d="M48 96 C 48 40 152 40 152 96 L152 150 C 152 196 48 196 48 150 Z" fill="#edeaf3" stroke="#5b5470" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- tiny ears -->
+          <polygon points="58,66 64,40 84,62" fill="#edeaf3" stroke="#5b5470" stroke-width="3.5" stroke-linejoin="round"/>
+          <polygon points="142,66 136,40 116,62" fill="#edeaf3" stroke="#5b5470" stroke-width="3.5" stroke-linejoin="round"/>
+          <polygon points="64,60 68,46 78,59" fill="#ffc0d3"/>
+          <polygon points="136,60 132,46 122,59" fill="#ffc0d3"/>
+          <!-- belly -->
+          <ellipse cx="100" cy="150" rx="34" ry="30" fill="#f8f6fc"/>
+          <!-- tucked paws -->
+          <ellipse cx="80" cy="178" rx="13" ry="8" fill="#f8f6fc" stroke="#5b5470" stroke-width="2.5"/>
+          <ellipse cx="120" cy="178" rx="13" ry="8" fill="#f8f6fc" stroke="#5b5470" stroke-width="2.5"/>
+          <!-- blush -->
+          <circle cx="72" cy="104" r="8" fill="#ffb3c8" opacity=".65"/>
+          <circle cx="128" cy="104" r="8" fill="#ffb3c8" opacity=".65"/>
+          <!-- dot eyes -->
+          <circle cx="84" cy="96" r="6" fill="#4b4360"/>
+          <circle cx="116" cy="96" r="6" fill="#4b4360"/>
+          <circle cx="86" cy="93" r="2" fill="#fff"/><circle cx="118" cy="93" r="2" fill="#fff"/>
+          <!-- nose + mouth -->
+          <circle cx="100" cy="106" r="3" fill="#ff8aa5"/>
+          <path d="M100 109 q-4 4 -8 1 M100 109 q4 4 8 1" fill="none" stroke="#5b5470" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 02</div>
+        <div class="name">Chonky Loaf</div>
+        <p class="desc">Maximum round. Head and body merge into one plump loaf, tiny ears, simple dot eyes. Peak "no thoughts, just vibes" — extremely meme-able and shareable.</p>
+        <div class="tags"><span class="tag">round</span><span class="tag">funny</span><span class="tag">viral-bait</span></div>
+        <div class="pal"><div class="sw" style="background:#edeaf3"></div><div class="sw" style="background:#5b5470"></div><div class="sw" style="background:#ffc0d3"></div><div class="sw" style="background:#4b4360"></div></div>
+      </div>
+    </div>
+
+    <!-- 3. MINIMAL LINE DOODLE -->
+    <div class="card">
+      <div class="stage" style="background:#ffffff">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <g fill="none" stroke="#222" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <!-- tail -->
+            <path d="M150 170 C 184 166 186 128 168 116"/>
+            <!-- body -->
+            <path d="M58 168 C 50 120 150 120 142 168 C 138 192 62 192 58 168 Z"/>
+            <!-- head -->
+            <circle cx="100" cy="100" r="50"/>
+            <!-- ears -->
+            <path d="M60 70 L70 28 L98 60"/>
+            <path d="M140 70 L130 28 L102 60"/>
+            <!-- paws -->
+            <path d="M82 188 q0 6 -10 5 M118 188 q0 6 10 5"/>
+          </g>
+          <!-- pink nose accent only -->
+          <path d="M95 110 L105 110 L100 116 Z" fill="#ff8aa5" stroke="none"/>
+          <g fill="none" stroke="#222" stroke-width="2.6" stroke-linecap="round">
+            <path d="M100 116 q-6 6 -12 2 M100 116 q6 6 12 2"/>
+          </g>
+          <!-- simple eyes -->
+          <circle cx="80" cy="98" r="4.5" fill="#222"/>
+          <circle cx="120" cy="98" r="4.5" fill="#222"/>
+          <!-- whiskers -->
+          <g stroke="#bbb" stroke-width="1.8" stroke-linecap="round">
+            <line x1="46" y1="104" x2="66" y2="106"/><line x1="46" y1="112" x2="66" y2="112"/>
+            <line x1="154" y1="104" x2="134" y2="106"/><line x1="154" y1="112" x2="134" y2="112"/>
+          </g>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 03</div>
+        <div class="name">Minimal Line Doodle</div>
+        <p class="desc">Single-weight black line, white fill, one pink accent. Notion-doodle / sticker-sheet energy. The most "designer-tasteful" and the lightest on screen.</p>
+        <div class="tags"><span class="tag">minimal</span><span class="tag">classy</span><span class="tag">unobtrusive</span></div>
+        <div class="pal"><div class="sw" style="background:#fff"></div><div class="sw" style="background:#222"></div><div class="sw" style="background:#ff8aa5"></div></div>
+      </div>
+    </div>
+
+    <!-- 4. GLOSSY 3D CLAY -->
+    <div class="card">
+      <div class="stage" style="background:linear-gradient(160deg,#eef6ff,#dfecfb)">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <defs>
+            <radialGradient id="fur" cx="40%" cy="30%" r="80%">
+              <stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#f3eee8"/><stop offset="100%" stop-color="#dcd2c6"/>
+            </radialGradient>
+            <radialGradient id="furb" cx="40%" cy="25%" r="85%">
+              <stop offset="0%" stop-color="#fbf7f1"/><stop offset="100%" stop-color="#e2d8cb"/>
+            </radialGradient>
+            <radialGradient id="eyeg" cx="35%" cy="30%" r="80%">
+              <stop offset="0%" stop-color="#6a5b6e"/><stop offset="100%" stop-color="#2a2230"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="158" cy="140" rx="16" ry="30" fill="url(#furb)"/>
+          <ellipse cx="100" cy="166" rx="50" ry="40" fill="url(#furb)"/>
+          <ellipse cx="100" cy="200" rx="46" ry="8" fill="#000" opacity=".06"/>
+          <polygon points="54,74 70,20 98,60" fill="url(#fur)"/>
+          <polygon points="146,74 130,20 102,60" fill="url(#fur)"/>
+          <polygon points="66,60 74,32 90,56" fill="#ffb9cc"/>
+          <polygon points="134,60 126,32 110,56" fill="#ffb9cc"/>
+          <ellipse cx="100" cy="100" rx="54" ry="48" fill="url(#fur)"/>
+          <ellipse cx="70" cy="112" rx="11" ry="7" fill="#ffb3c8" opacity=".55"/>
+          <ellipse cx="130" cy="112" rx="11" ry="7" fill="#ffb3c8" opacity=".55"/>
+          <ellipse cx="78" cy="100" rx="9" ry="12" fill="url(#eyeg)"/>
+          <ellipse cx="122" cy="100" rx="9" ry="12" fill="url(#eyeg)"/>
+          <circle cx="82" cy="94" r="3.5" fill="#fff"/><circle cx="126" cy="94" r="3.5" fill="#fff"/>
+          <ellipse cx="100" cy="114" rx="5" ry="3.5" fill="#ff8aa5"/>
+          <path d="M100 117 q-5 6 -11 2 M100 117 q5 6 11 2" fill="none" stroke="#b59f96" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 04</div>
+        <div class="name">Glossy 3D Clay</div>
+        <p class="desc">Soft gradients, drop shadow, glossy eyes — a claymorphism / 3D-render look. Feels premium and tactile, like a little toy sitting on your desktop.</p>
+        <div class="tags"><span class="tag">premium</span><span class="tag">tactile</span><span class="tag">no outline</span></div>
+        <div class="pal"><div class="sw" style="background:#f3eee8"></div><div class="sw" style="background:#dcd2c6"></div><div class="sw" style="background:#ffb9cc"></div><div class="sw" style="background:#2a2230"></div></div>
+      </div>
+    </div>
+
+    <!-- 5. BOLD STICKER (GEN-Z) -->
+    <div class="card">
+      <div class="stage" style="background:linear-gradient(160deg,#fff4e6,#ffe0c2)">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <!-- white sticker border via fat white stroke under black stroke -->
+          <g stroke="#fff" stroke-width="12" stroke-linejoin="round" fill="#fff">
+            <path d="M150 174 C 186 170 190 126 170 112" fill="none" stroke-width="22" stroke-linecap="round"/>
+            <ellipse cx="100" cy="166" rx="50" ry="40"/>
+            <polygon points="52,72 68,14 98,58"/><polygon points="148,72 132,14 102,58"/>
+            <ellipse cx="100" cy="100" rx="55" ry="49"/>
+          </g>
+          <g stroke="#1c1726" stroke-width="5" stroke-linejoin="round">
+            <path d="M150 174 C 186 170 190 126 170 112" fill="none" stroke-linecap="round"/>
+            <path d="M150 174 C 186 170 190 126 170 112" fill="none" stroke="#ffd23f" stroke-width="13" stroke-linecap="round"/>
+            <ellipse cx="100" cy="166" rx="50" ry="40" fill="#ffd23f"/>
+            <ellipse cx="100" cy="174" rx="24" ry="24" fill="#fff7df" stroke="none"/>
+            <polygon points="52,72 68,14 98,58" fill="#ffd23f"/>
+            <polygon points="148,72 132,14 102,58" fill="#ffd23f"/>
+            <ellipse cx="100" cy="100" rx="54" ry="48" fill="#ffd23f"/>
+          </g>
+          <polygon points="64,56 72,26 88,52" fill="#ff7eb3" stroke="none"/>
+          <polygon points="136,56 128,26 112,52" fill="#ff7eb3" stroke="none"/>
+          <circle cx="70" cy="112" r="9" fill="#ff7eb3" opacity=".75"/>
+          <circle cx="130" cy="112" r="9" fill="#ff7eb3" opacity=".75"/>
+          <ellipse cx="78" cy="100" rx="9" ry="12" fill="#1c1726"/>
+          <ellipse cx="122" cy="100" rx="9" ry="12" fill="#1c1726"/>
+          <circle cx="82" cy="95" r="3.6" fill="#fff"/><circle cx="126" cy="95" r="3.6" fill="#fff"/>
+          <path d="M94 114 L106 114 L100 121 Z" fill="#ff5e9a"/>
+          <path d="M100 121 q-6 6 -12 2 M100 121 q6 6 12 2" fill="none" stroke="#1c1726" stroke-width="3" stroke-linecap="round"/>
+          <!-- sparkle -->
+          <path d="M156 64 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 z" fill="#fff" stroke="#1c1726" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 05</div>
+        <div class="name">Bold Sticker (Gen-Z)</div>
+        <p class="desc">Thick black outline, flat punchy fills, a white die-cut sticker border, and a sparkle. Pops hard against any wallpaper — the most "TikTok screenshot" friendly.</p>
+        <div class="tags"><span class="tag">bold</span><span class="tag">high-contrast</span><span class="tag">funky</span></div>
+        <div class="pal"><div class="sw" style="background:#ffd23f"></div><div class="sw" style="background:#1c1726"></div><div class="sw" style="background:#ff7eb3"></div><div class="sw" style="background:#fff"></div></div>
+      </div>
+    </div>
+
+    <!-- 6. SOFT MOCHI -->
+    <div class="card">
+      <div class="stage" style="background:linear-gradient(160deg,#fbfbff,#eef0fb)">
+        <svg width="190" height="200" viewBox="0 0 200 210">
+          <defs>
+            <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#9aa0c8" flood-opacity="0.25"/>
+            </filter>
+          </defs>
+          <g filter="url(#soft)">
+            <path d="M150 172 C 182 168 184 132 168 120" fill="none" stroke="#f4f3fb" stroke-width="18" stroke-linecap="round"/>
+            <ellipse cx="100" cy="166" rx="49" ry="39" fill="#f4f3fb"/>
+            <polygon points="56,74 70,28 96,60" fill="#f4f3fb"/>
+            <polygon points="144,74 130,28 104,60" fill="#f4f3fb"/>
+            <ellipse cx="100" cy="100" rx="53" ry="47" fill="#f7f6fd"/>
+          </g>
+          <polygon points="66,60 74,38 88,57" fill="#ffd0de"/>
+          <polygon points="134,60 126,38 112,57" fill="#ffd0de"/>
+          <ellipse cx="72" cy="110" rx="10" ry="6.5" fill="#ffc2d4" opacity=".8"/>
+          <ellipse cx="128" cy="110" rx="10" ry="6.5" fill="#ffc2d4" opacity=".8"/>
+          <!-- gentle closed-ish happy eyes -->
+          <path d="M72 100 q6 7 14 0" fill="none" stroke="#9a8fae" stroke-width="3.4" stroke-linecap="round"/>
+          <path d="M114 100 q6 7 14 0" fill="none" stroke="#9a8fae" stroke-width="3.4" stroke-linecap="round"/>
+          <ellipse cx="100" cy="112" rx="4" ry="3" fill="#ffadc4"/>
+          <path d="M100 114 q-4 5 -9 1 M100 114 q4 5 9 1" fill="none" stroke="#c9bfd6" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="meta">
+        <div class="num">Style 06</div>
+        <div class="name">Soft Mochi</div>
+        <p class="desc">No outline at all — just pale pillowy shapes, a soft shadow, and gentle ‿‿ eyes. Dreamy and calm. The most "ambient, barely-there" of the set.</p>
+        <div class="tags"><span class="tag">dreamy</span><span class="tag">calm</span><span class="tag">soft</span></div>
+        <div class="pal"><div class="sw" style="background:#f4f3fb"></div><div class="sw" style="background:#ffd0de"></div><div class="sw" style="background:#9a8fae"></div><div class="sw" style="background:#ffadc4"></div></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>All six are the same pose for fair comparison. Moods (glasses / headphones / beret / nightcap) get drawn in whichever style you choose. — Digital Pat design QA</footer>
+</div>
+</body>
+</html>

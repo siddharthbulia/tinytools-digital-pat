@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Pat · 2-person scenarios — wireframes + code behavior</title>
+<style>
+  :root{ --bg:#fff7fb; --card:#fff; --ink:#2b2440; --muted:#7a7290; --pink:#ff7eb6; --purple:#8b7bff;
+    --line:#eee3f2; --good:#19a974; --warn:#e8a33d; --bad:#e0567a; }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#fff7fb,#f3f0ff);color:var(--ink);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 80px}
+  header.hero{background:linear-gradient(135deg,#ff9ecb,#9d8bff);color:#fff;border-radius:20px;padding:26px 28px;
+    box-shadow:0 14px 40px rgba(157,139,255,.3)}
+  header.hero h1{margin:0 0 4px;font-size:25px}
+  header.hero p{margin:4px 0 0;opacity:.95;font-size:15px}
+  h2{font-size:20px;margin:26px 0 6px;border-left:5px solid var(--purple);padding-left:10px}
+  h3{font-size:15px;margin:0 0 4px}
+  .legend{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:16px 0}
+  .legend b{color:var(--purple)}
+  .scen{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0;
+    box-shadow:0 4px 14px rgba(43,36,64,.05)}
+  .scen .tag{display:inline-block;background:#f1eefe;color:var(--purple);border-radius:999px;padding:2px 9px;
+    font-size:11.5px;font-weight:700;margin-right:6px}
+  .scen .q{font-weight:700;font-size:15px;margin:2px 0 10px}
+  .screens{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .screen{background:#fbfaff;border:1px solid var(--line);border-radius:10px;padding:10px}
+  .screen .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+  pre{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.45;
+    white-space:pre;overflow-x:auto;color:#3a3450}
+  .code{margin-top:10px;background:#1c1430;color:#ffd6e8;border-radius:9px;padding:9px 12px;font-size:12.5px}
+  .code b{color:#ffe9a8}
+  .gap{background:#fff0f4;border-left:4px solid var(--bad);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px}
+  .ok{background:#eafaf2;border-left:4px solid var(--good);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:13px}
+  table.matrix{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;background:var(--card)}
+  table.matrix th,table.matrix td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  table.matrix th{background:#faf6ff;color:var(--muted);font-size:11.5px;text-transform:uppercase}
+  .pill{display:inline-block;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700}
+  .pl-local{background:#fdeede;color:var(--warn)} .pl-none{background:#fde6ec;color:var(--bad)}
+  .pl-inplace{background:#e3f7ee;color:var(--good)} .pl-trans{background:#e9f0ff;color:#4a6cf0}
+  .note{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Digital Pat — 2-person scenarios 🐱🐰</h1>
+  <p>Every combination of who's "in the Room" vs "on the Deck", with <b>pat</b> and <b>poke</b> — your screen vs your friend's screen, and exactly what today's code does.</p>
+</header>
+
+<div class="legend">
+  <b>The model.</b> You = 🐱 (Me), friend = 🐰 (Bob). Each side independently decides whether the other is
+  <b>IN</b> (just sitting in the Room window) or <b>OUT</b> (pulled onto the desktop / "deck").
+  <br>• You can only <b>pat / poke a friend who's on YOUR deck</b> (the Room itself has no interactions — tapping a tile just takes them out).
+  <br>• <span class="pill pl-local">PAT</span> = click their deck pet → 💗 + hop. <b>Local only</b> in the current build (does not reach them).
+  <br>• <span class="pill pl-inplace">POKE</span> = right-click → sends over the network. How it lands on <i>their</i> screen depends on whether <b>you</b> are on <i>their</i> deck.
+</div>
+
+<h2>Quick matrix — what each side sees</h2>
+<table class="matrix">
+  <tr><th>Deck state</th><th>I pat Bob</th><th>I poke Bob</th><th>Bob pokes me</th></tr>
+  <tr>
+    <td><b>Both IN</b><br><span class="note">neither on a deck</span></td>
+    <td>🚫 can't — Bob isn't on my deck</td>
+    <td>🚫 can't</td>
+    <td>🚫 can't</td>
+  </tr>
+  <tr>
+    <td><b>I took Bob OUT</b>,<br>Bob kept me IN</td>
+    <td>My screen: 🐰💗 hops. <span class="pill pl-none">Bob: nothing</span></td>
+    <td>My screen: <span class="pill pl-none">nothing</span>. Bob's screen: <span class="pill pl-trans">transient 🐱 pops top-right</span> (I'm not on his deck)</td>
+    <td>🚫 Bob can't — I'm not on his deck</td>
+  </tr>
+  <tr>
+    <td><b>Both OUT</b><br><span class="note">each on the other's deck</span></td>
+    <td>My screen: 🐰💗 hops. <span class="pill pl-none">Bob: nothing</span></td>
+    <td>My screen: <span class="pill pl-none">nothing</span>. Bob's screen: <span class="pill pl-inplace">🐱 jumps IN PLACE</span> (I'm on his deck)</td>
+    <td>My screen: <span class="pill pl-inplace">🐰 jumps in place</span>. Bob's screen: nothing</td>
+  </tr>
+</table>
+
+<h2>State A · Both kept each other IN (Room only)</h2>
+
+<div class="scen">
+  <div class="q"><span class="tag">A1</span> Resting — what's even possible?</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>menu bar … 🐱
+┌ Room · PATPARTY ──────┐
+│   🐰                  │
+│   Bob                 │   Bob sits in my Room
+└───────────────────────┘
+(desktop empty)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>menu bar … 🐰
+┌ Room · PATPARTY ──────┐
+│   🐱                  │
+│   Me                  │   I sit in Bob's Room
+└───────────────────────┘
+(desktop empty)</pre></div>
+  </div>
+  <div class="code">CODE: both are room members (presence) → each appears in the other's Room grid. Neither is on a deck, so <b>no pat/poke is possible</b>. To interact, someone must take the other out first.</div>
+  <div class="ok">✓ Works as designed: a calm "we're both here" state. Nothing happens until someone pulls the other onto their desktop.</div>
+</div>
+
+<h2>State B · I took Bob OUT · Bob kept me IN  (your scenarios #2 & #3)</h2>
+
+<div class="scen">
+  <div class="q"><span class="tag">B1</span> Resting</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>menu bar … 🐱        🐰
+                     Bob   ← on my desktop
+┌ Room · PATPARTY ──────┐
+│  🐰(dim·🖥️) Bob       │
+└───────────────────────┘</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>menu bar … 🐰
+┌ Room · PATPARTY ──────┐
+│   🐱  Me              │   I'm only in his Room
+└───────────────────────┘
+(desktop empty)</pre></div>
+  </div>
+  <div class="code">CODE: my deck = {Bob} → Bob's pet renders on my desktop. Bob's deck = {} → his desktop empty; I show in his Room grid only.</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">B2 · your #2</span> I PAT Bob</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>          🐰 💗💗
+          Bob  (hops!)
+   ↑ I clicked Bob's pet</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>(nothing happens)
+
+   Bob has no idea
+   I patted him 😶</pre></div>
+  </div>
+  <div class="code">CODE: <b>pat is LOCAL</b> — <code>RemotePetView.pat()</code> just plays hearts + a hop on my machine. Nothing is sent to Bob.</div>
+  <div class="gap">⚠ GAP: patting a friend doesn't reach them. If a pat should feel social ("Bob feels the love"), we'd need pat to also send a tiny network event. <b>Design question for you below.</b></div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">B3 · your #3</span> I POKE Bob ("yo")</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>(nothing visible)
+
+   I right-clicked 🐰 → "yo"
+   …but I get no feedback 😶</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>menu bar … 🐰      🐱‼️ "yo"
+                   Me  (pops top-
+                       right, jumps,
+                       then leaves)
+┌ Room · PATPARTY ──────┐
+│   🐱  Me              │</pre></div>
+  </div>
+  <div class="code">CODE: <code>RoomStore.poke()</code> sends <code>send_poke</code>. On Bob's side the poke arrives via Postgres-changes → <code>PresencePetsController.poke()</code>. I am <b>not</b> on Bob's deck, so it spawns a <span class="pill pl-trans">transient 🐱 top-right</span> that jumps with "yo" and disappears after ~6s.</div>
+  <div class="gap">⚠ GAP: <b>no local feedback when I poke</b> — my own screen shows nothing, so I can't tell it sent. Probably want a tiny confirmation (e.g. my cursor-side 👋 or Bob's tile flashing).</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">B4</span> Bob tries to pat / poke me</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>(unaffected)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>Bob can't — I'm only in his
+Room, not on his deck. He'd
+have to take me OUT first.</pre></div>
+  </div>
+  <div class="code">CODE: interaction is gated on the actor's own deck. Bob's deck = {} → no pet of mine to pat/poke.</div>
+</div>
+
+<h2>State C · Bob took me OUT · I kept Bob IN  (mirror of B)</h2>
+
+<div class="scen">
+  <div class="q"><span class="tag">C1</span> Bob POKEs me</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>menu bar … 🐱   🐰‼️ "miss you"
+                Bob (pops top-right,
+                     jumps, leaves)
+┌ Room · PATPARTY ──────┐
+│   🐰  Bob             │</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>(nothing visible — no
+ feedback that it sent)</pre></div>
+  </div>
+  <div class="code">CODE: symmetric to B3. Bob is on his own deck-of-me? No — <i>I</i> am on Bob's deck (he took me out), but the transient/in-place choice depends on whether the <b>poker (Bob)</b> is on the <b>recipient (me)</b>'s deck. I kept Bob IN, so Bob is not on my deck → 🐰 <span class="pill pl-trans">transient top-right</span> on my screen.</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">C2</span> Bob PATs me</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>(nothing — pat is local
+ to Bob's machine)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>   🐱 💗💗
+   Me (hops on Bob's deck)</pre></div>
+  </div>
+  <div class="code">CODE: same local-only pat. Bob sees my pet react on his screen; I see nothing.</div>
+</div>
+
+<h2>State D · Both kept each other OUT  (your scenario #4)</h2>
+
+<div class="scen">
+  <div class="q"><span class="tag">D1</span> Resting — both desktops populated</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>menu bar … 🐱        🐰
+                     Bob  ← on my deck</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>menu bar … 🐰        🐱
+                     Me   ← on Bob's deck</pre></div>
+  </div>
+  <div class="code">CODE: my deck = {Bob}, Bob's deck = {Me}. Each renders the other on the desktop, moods syncing live.</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">D2</span> I POKE Bob — now it lands IN PLACE</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>(nothing visible — same
+ no-feedback gap)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>          🐱 ‼️ "yo"
+          Me  (jumps RIGHT WHERE
+               it already sits on
+               Bob's deck)</pre></div>
+  </div>
+  <div class="code">CODE: I <b>am</b> on Bob's deck now → <code>poke()</code> finds my existing pet and jumps it <span class="pill pl-inplace">in place</span> with the message (no transient).</div>
+  <div class="ok">✓ This is the nicest case — the poke animates the real, persistent pet you already have on screen.</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">D3</span> I PAT Bob (still local)</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>   🐰 💗 Bob (hops)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>(nothing — pat stays local)</pre></div>
+  </div>
+  <div class="code">CODE: unchanged — pat is local even when both are out.</div>
+  <div class="gap">⚠ Same pat gap: even in the "best" both-out state, a pat doesn't reach Bob.</div>
+</div>
+
+<div class="scen">
+  <div class="q"><span class="tag">D4</span> Both poke at once</div>
+  <div class="screens">
+    <div class="screen"><div class="lbl">My screen 🐱</div><pre>   🐰 ‼️ "miss you"
+   Bob jumps in place
+   (from Bob's poke)</pre></div>
+    <div class="screen"><div class="lbl">Bob's screen 🐰</div><pre>   🐱 ‼️ "yo"
+   Me jumps in place
+   (from my poke)</pre></div>
+  </div>
+  <div class="code">CODE: each poke is independent; each lands in-place on the recipient's deck. Feels like a back-and-forth giggle. (Server rate-limit: 30 pokes / 60s per sender.)</div>
+</div>
+
+<h2>What the wireframes reveal (the honest gaps)</h2>
+<div class="legend">
+  <b>1. Pat never reaches your friend.</b> It's a local animation only. In all of B2 / C2 / D3, the other person sees nothing. Likely wrong if a pat is meant as affection you send.
+  <br><b>2. No feedback when YOU poke.</b> Your own screen does nothing — you can't tell the poke sent (B3 / C1 / D2).
+  <br><b>3. Poke landing (in-place vs top-right) is decided by the recipient's deck, not yours.</b> You poke the same way; whether your pet appears in-place or pops top-right on their screen depends on whether <i>they</i> took <i>you</i> out. Non-obvious but arguably fine.
+  <br><b>4. You can't pat/poke someone you haven't taken out.</b> Intended ("play only when out"), but it means the Room is purely a staging area.
+</div>
+
+<footer style="color:var(--muted);font-size:13px;margin-top:20px">Digital Pat · 2-person scenarios · pat + poke only · <span>apps/digital-pat/wireframes-2person.html</span></footer>
+</div>
+</body>
+</html>

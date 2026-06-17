@@ -1,0 +1,13 @@
+{
+  "name": "Digital Pat",
+  "slug": "digital-pat",
+  "bundleId": "ai.bulia.tinytools.digitalpat",
+  "version": "1.14.0",
+  "trayGlyph": "\ud83d\udc31",
+  "tagline": "A tiny kitten that lives on your screen and reacts to what you're doing.",
+  "iconGradient": [
+    "#ffd1e3",
+    "#ff7eb3"
+  ],
+  "accentColor": "#ff8fb1"
+}

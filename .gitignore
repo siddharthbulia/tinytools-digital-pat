@@ -1,0 +1,19 @@
+# Credentials — NEVER commit (Apple Developer ID, notarization creds)
+.env
+.env.*
+*.pem
+
+# Swift build caches / outputs
+.build/
+**/.build/
+build-swift/
+*.xcodeproj
+
+# Notarization scratch
+*-notarize.zip
+
+# Distributed binaries — served from Vercel; not source. (appcast.xml keeps the URLs.)
+website/public/downloads/*.dmg
+
+# macOS / misc
+.DS_Store

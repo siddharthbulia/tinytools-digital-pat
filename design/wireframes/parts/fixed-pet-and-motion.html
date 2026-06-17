@@ -1,0 +1,364 @@
+<section id="pet-and-motion" class="card">
+  <div class="kicker"><span class="num">01</span> Pet &amp; Motion</div>
+  <h2>The desktop kitten — animation is the star</h2>
+  <p class="lead">A tiny, sweet companion that lives on your desktop and <em>moves like it's alive</em>. The signature moment: grab it and it stands up and <strong>walks</strong> in your drag direction, then settles when you let go. Everything is slow, soft, and eased — never snappy, never busy.</p>
+
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>The hook</b> motion is the whole product. A still cute kitten is a sticker; a kitten that <em>toddles after your cursor and slow-blinks when you pat it</em> is a companion. Spend the polish budget here.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== A. ON-SCREEN ANATOMY ===================== -->
+  <h3>a · On-screen anatomy</h3>
+  <p class="muted">How Pat sits on a real macOS desktop — where it floats, how big it is, and how it stays out of your way.</p>
+
+  <div class="grid2">
+    <div>
+      <div class="desktop">
+        <div class="menubar">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="mb-item"></span>
+          <span class="tray"><span class="pat-glyph">🐱</span></span>
+          <span class="clock">2:14 PM</span>
+        </div>
+        <div class="screen">
+          <div class="stage">
+            <div class="pin-br">
+              <div class="bubble kitten above">hi! i'm just hanging out 🐾</div>
+              <div class="pet">
+                <img class="px" src="sprites/neutral.png" alt="pat">
+                <span class="pet-tag">neutral</span>
+              </div>
+              <div class="shadow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="note center">Pat floats over your work, bottom-right by default — draggable anywhere.</p>
+    </div>
+
+    <div class="stack-tight">
+      <h3>spec callouts</h3>
+      <div class="chip-row">
+        <span class="pill">~120px tall</span>
+        <span class="pill sage">always-on-top</span>
+        <span class="pill lilac">transparent window</span>
+        <span class="pill butter">draggable</span>
+      </div>
+      <div class="spacer-s"></div>
+      <ul>
+        <li><span class="label">Size</span> ~120px square art safe-area; sits light over any window.</li>
+        <li><span class="label">Layer</span> always-on-top, no Dock icon (<code>LSUIElement</code>), tiny menu-bar 🐱 for controls.</li>
+        <li><span class="label">Click-through-except-body</span> only the kitten's body catches clicks (pat / drag). The transparent canvas around it passes clicks straight through to whatever's behind — you never lose a click to empty pixels.</li>
+        <li><span class="label">Contact shadow</span> a soft elliptical shadow grounds Pat so it reads as <em>on</em> the desktop, not pasted on top.</li>
+        <li><span class="label">Speech bubble</span> appears occasionally above/beside the body in Pat's sweet lowercase voice, then fades.</li>
+      </ul>
+      <div class="callout delight">
+        <span class="ico">✨</span>
+        <span class="ct"><b>Grounded</b> the shadow squashes &amp; stretches subtly with the breathe loop — a free, constant signal that Pat is alive.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout avoid">
+    <span class="ico">🚫</span>
+    <span class="ct"><b>feels like tracking</b> no floating stat bars, no "uptime", no counters pinned to the body. Pat's state shows in <em>posture</em>, never numbers.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== B. MOTION STORYBOARDS ===================== -->
+  <h3>b · Motion storyboards</h3>
+  <p class="muted">Each filmstrip is a labeled motion loop. Pink keywords mark the <em>delight beat</em> in each one.</p>
+
+  <!-- IDLE LOOP -->
+  <h3>idle loop · always running</h3>
+  <p class="note">The baseline "is alive" loop. Gentle and lazy — one micro-motion at a time, never two at once.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(1.02)"></div>
+      <figcaption class="cap"><em>breathe</em> — body scales ~2–3% on a slow 2.5–3s ease, anchored at the feet</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.97)"></div>
+      <figcaption class="cap"><em>blink</em> — quick ~120ms close every 3–6s</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(-2deg)"></div>
+      <figcaption class="cap"><em>ear-twitch</em> — one ear flicks, lazy, every ~6–10s</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">4</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(1.5deg)"></div>
+      <figcaption class="cap"><em>tail-flick</em> — soft tail sway, then loops back to breathe</figcaption>
+    </figure>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <!-- WALK ON DRAG — the favorite, most detailed -->
+  <div class="row center">
+    <span class="pill">★ founder's favorite</span>
+    <span class="chip"><span class="dot"></span>most detailed</span>
+  </div>
+  <h3>walk-on-drag · grab → stand → toddle → settle</h3>
+  <p class="note">The signature interaction. When you pick Pat up, it doesn't slide like a sticker — it <strong>stands on its little legs and walks</strong> in the direction you're dragging, tail balancing, then sits when you drop it.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.88) translateY(4px)"></div>
+      <figcaption class="cap"><em>grab</em> — cursor presses down; tiny <em>anticipation</em> squash, ears perk, surprised "!" beat</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(1.08) translateY(-3px)"></div>
+      <figcaption class="cap"><em>stand up</em> — kitten rises onto back paws, body uncurls, balance pose</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell">
+        <span class="step-no">3</span>
+        <span class="dir-arrow">→</span>
+        <img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleX(-1) rotate(4deg) translateY(-1px)">
+      </div>
+      <figcaption class="cap"><em>walk</em> — little legs cycle in the <em>drag direction</em>, tail counter-balances, body leans into the move</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell">
+        <span class="step-no">4</span>
+        <span class="dir-arrow">↘</span>
+        <img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleX(-1) rotate(-3deg) translateY(2px)">
+      </div>
+      <figcaption class="cap"><em>steer</em> — legs + lean re-orient live as you change direction; faster drag = quicker steps</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">5</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.9) translateY(3px)"></div>
+      <figcaption class="cap"><em>drop</em> — release; a soft landing squash, tail swishes to catch balance</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">6</span><img class="px" src="sprites/neutral.png" alt="pat"></div>
+      <figcaption class="cap"><em>settle</em> — eases back into a sit, gives a little shake, returns to idle loop</figcaption>
+    </figure>
+  </div>
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>The money beat</b> the walk direction <em>follows your hand</em> in real time. Drag left, it toddles left; whip it around, it scrambles to keep up. Legs speed up with drag velocity. This is the demo that sells the app.</span>
+  </div>
+  <div class="callout avoid">
+    <span class="ico">🚫</span>
+    <span class="ct"><b>avoid</b> rigid 1:1 cursor-locking or a snappy teleport. Pat should feel like it's being <em>carried</em> — a hair of lag and lean, never a stiff drag handle.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <!-- SELF WANDER -->
+  <h3>self-wander · occasional, on its own</h3>
+  <p class="note">Every so often Pat decides to take a little stroll across the screen by itself, then finds a spot and sits. Rare enough to feel like a surprise, gentle enough to never distract.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:translateY(-2px)"></div>
+      <figcaption class="cap"><em>perk</em> — looks up from a sit, decides to wander</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell">
+        <span class="step-no">2</span>
+        <span class="dir-arrow">→</span>
+        <img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleX(-1) rotate(3deg)">
+      </div>
+      <figcaption class="cap"><em>stroll</em> — same walk cycle, slow self-chosen path across the desktop</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(-3deg)"></div>
+      <figcaption class="cap"><em>pause</em> — stops, looks around (head tilt, blink)</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">4</span><img class="px" src="sprites/neutral.png" alt="pat"></div>
+      <figcaption class="cap"><em>sit</em> — settles into a new spot, back to idle</figcaption>
+    </figure>
+  </div>
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>Alive, not annoying</b> wandering reuses the walk rig; sometimes Pat chases the cursor a few steps then loses interest. Cap frequency &amp; keep paths short so it never gets in the way.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <div class="grid2">
+    <!-- GROOMING -->
+    <div>
+      <h3>grooming · lick-paw</h3>
+      <p class="note">A cozy little self-care moment.</p>
+      <div class="filmstrip">
+        <figure class="frame">
+          <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(-4deg)"></div>
+          <figcaption class="cap"><em>lift paw</em> toward mouth</figcaption>
+        </figure>
+        <figure class="frame">
+          <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(-2deg) translateY(1px)"></div>
+          <figcaption class="cap"><em>lick</em> — small repeated bobs</figcaption>
+        </figure>
+        <figure class="frame">
+          <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(2deg)"></div>
+          <figcaption class="cap"><em>swipe</em> over ear, then settle</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- STRETCH -->
+    <div>
+      <h3>stretch · a big yawn-y reach</h3>
+      <p class="note">Often after a nap or a long idle.</p>
+      <div class="filmstrip">
+        <figure class="frame">
+          <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.85) translateY(5px)"></div>
+          <figcaption class="cap"><em>anticipate</em> — sink down low</figcaption>
+        </figure>
+        <figure class="frame">
+          <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(1.15) scaleX(1.05) translateY(-4px)"></div>
+          <figcaption class="cap"><em>reach</em> — long front-paw stretch, arched back</figcaption>
+        </figure>
+        <figure class="frame">
+          <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/neutral.png" alt="pat"></div>
+          <figcaption class="cap"><em>relax</em> — soft shake-off back to sit</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <!-- PURR ON PAT — the money moment -->
+  <h3>purr-on-pat · the slow-blink money moment</h3>
+  <p class="note">Click the body and Pat does the real-cat "I love you": eyes <strong>ease closed into happy arcs</strong>, body softly vibrates with a visible purr, and hearts drift up. The whole beat is slow and eased — if it feels snappy, it's wrong.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.95) translateX(3px)"></div>
+      <figcaption class="cap"><em>pat</em> — cursor taps body; tiny squash + lean toward the cursor (~3px)</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat"></div>
+      <figcaption class="cap"><em>slow-blink</em> — eyes ease closed over ~400ms into happy <code>‿‿</code> arcs</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/pat.png" alt="pat" style="transform:translateX(1px)"></div>
+      <figcaption class="cap"><em>purr</em> — visible 1–2px vibration at ~12–16Hz for ~1s (the purr you can <em>see</em>)</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell">
+        <span class="step-no">4</span>
+        <img class="px" src="sprites/pat.png" alt="pat">
+        <div class="hearts"><span>♥</span><span>♥</span><span>♥</span></div>
+      </div>
+      <figcaption class="cap"><em>hearts</em> — varied-size hearts drift up &amp; fade over ~1s, slight wander</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">5</span><img class="px" src="sprites/neutral.png" alt="pat"></div>
+      <figcaption class="cap"><em>ease back</em> — eyes reopen softly, sinks happily back to idle</figcaption>
+    </figure>
+  </div>
+  <div class="row center">
+    <div class="pet sm">
+      <img class="px" src="sprites/pat.png" alt="pat">
+      <span class="prop">💕</span>
+      <span class="pet-tag">pat</span>
+      <div class="hearts"><span>♥</span><span>♥</span><span>♥</span></div>
+    </div>
+    <div class="bubble kitten">prrr~ 💗</div>
+  </div>
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>Earn the affection</b> the slow-blink is the single most "I love you" thing a cat does. Slow it down, let the hearts wander, keep the <code>prrr~</code> rounded and lowercase. Optional soft purr loop = huge sweetness payoff.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <!-- SLEEPY CURL / NAP -->
+  <h3>sleepy curl · nap (gentle neglect state)</h3>
+  <p class="note">After a stretch of no input, Pat gets sleepy and curls into a loaf with a nightcap and floating Zzz. This is the <em>only</em> thing "neglect" does — it never dies, never guilt-trips, just naps until you come back.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:rotate(3deg)"></div>
+      <figcaption class="cap"><em>droop</em> — eyes get heavy, head nods</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(.78) scaleX(1.08) translateY(8px)"></div>
+      <figcaption class="cap"><em>curl</em> — folds into a soft loaf, tail wraps around</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell">
+        <span class="step-no">3</span>
+        <img class="px" src="sprites/idle.png" alt="pat">
+        <span class="prop">💤</span>
+      </div>
+      <figcaption class="cap"><em>nap</em> — slow breathe, gentle Zzz float, nightcap on</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">4</span><img class="px" src="sprites/neutral.png" alt="pat" style="transform:scaleY(1.12) translateY(-3px)"></div>
+      <figcaption class="cap"><em>wake</em> — on return/pat: yawn + stretch, eases awake happy</figcaption>
+    </figure>
+  </div>
+  <div class="row center">
+    <div class="pet sm">
+      <img class="px" src="sprites/idle.png" alt="pat">
+      <span class="prop">😴</span>
+      <span class="pet-tag">napping</span>
+    </div>
+    <div class="bubble kitten above">mmf… nap time… 💤</div>
+  </div>
+  <div class="callout avoid">
+    <span class="ico">🚫</span>
+    <span class="ct"><b>never punish</b> no sad face, no "you ignored me", no decaying health. Neglect = sleepy &amp; curled. Coming back is always a warm welcome, never a scolding.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+
+  <!-- MOOD TRANSITION -->
+  <h3>mood transition · a real sprite swap</h3>
+  <p class="note">When your context changes, Pat re-poses to match — never with a hard cut. A soft <em>poof</em> bridges the old pose and the new one, so the swap reads as a costume change, not a glitch.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span><img class="px" src="sprites/browsing.png" alt="pat"></div>
+      <figcaption class="cap"><em>before</em> — Pat was matching a <em>browsing</em> moment</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span><span class="prop">✨</span></div>
+      <figcaption class="cap"><em>poof</em> — a soft sparkle bridges the swap so it never hard-cuts</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">3</span><img class="px" src="sprites/coding.png" alt="pat"></div>
+      <figcaption class="cap"><em>after</em> — eases into the new <em>coding</em> pose, then back to idle</figcaption>
+    </figure>
+  </div>
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>Costume, not surveillance</b> the swap mirrors <em>your vibe</em> back as a cute pose — it never labels, scores, or logs what you're doing. Always eased, always a poof, never a snap.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===================== C. MOTION PRINCIPLES ===================== -->
+  <h3>c · Motion principles</h3>
+  <p class="muted">The rules every animation obeys. When in doubt: softer and slower.</p>
+  <div class="grid3">
+    <div class="card" style="box-shadow:none">
+      <h3>slow &amp; eased</h3>
+      <p class="note">Long durations, ease-in-out curves. Nothing linear, nothing instant. Idle breathe is ~2.5–3s; the slow-blink is ~400ms <em>on purpose</em>.</p>
+    </div>
+    <div class="card" style="box-shadow:none">
+      <h3>anticipation</h3>
+      <p class="note">Every big move winds up first — a little sink before a stretch, a squash before standing on drag. The wind-up is what reads as "alive."</p>
+    </div>
+    <div class="card" style="box-shadow:none">
+      <h3>secondary motion</h3>
+      <p class="note">Tail and ears trail the body — the tail counter-balances the walk, ears settle a beat late. Overlap is the difference between a puppet and a creature.</p>
+    </div>
+  </div>
+  <div class="chip-row center">
+    <span class="pill sage">never snappy</span>
+    <span class="pill lilac">one micro-motion at a time</span>
+    <span class="pill butter">overshoot, then settle</span>
+    <span class="pill ghost">soft contact shadow always</span>
+  </div>
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>North star</b> "carried, not dragged. blinks like it means it. naps, never dies." If a motion makes you feel <em>watched</em> or <em>rushed</em>, it's the wrong motion — soften it or cut it.</span>
+  </div>
+</section>

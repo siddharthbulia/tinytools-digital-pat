@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Pat — a cute pixel kitten for your Mac</title>
+<meta name="description" content="Digital Pat is a tiny pixel-art kitten who lives on your Mac, reacts to what you're doing, plays around your screen, and purrs when you pat her. Free, all-local, zero permissions.">
+<link rel="icon" href="/icon.png">
+<meta property="og:title" content="Digital Pat — a cute pixel kitten for your Mac">
+<meta property="og:description" content="A tiny pixel kitten who keeps you company while you work. Reacts to your apps, plays around your screen, purrs when patted. Free · macOS · no permissions.">
+<meta property="og:image" content="/icon.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --cream:#FBF3E8; --card:#FFFDF8; --ink:#4A3F47; --ink2:#7A6F78; --ink3:#A89DA3;
+    --line:#EADCCB; --pink:#FF8FB1; --pink-ink:#C85F82; --pink-wash:#FFE7F0;
+    --sage:#BFD8B8; --sage-wash:#EAF3E0; --butter-wash:#FFF6D6; --lilac-wash:#F3ECFF; --sky-wash:#E6F4FA;
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);
+    font:17px/1.6 ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1000px 600px at 12% -10%, var(--pink-wash), transparent 60%),
+      radial-gradient(900px 560px at 90% 2%, var(--lilac-wash), transparent 55%),
+      var(--cream);}
+  img{image-rendering:pixelated; image-rendering:crisp-edges}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+  a{color:var(--pink-ink)}
+
+  /* hero */
+  header{text-align:center;padding:72px 24px 8px}
+  .pet-hero{width:172px;height:172px;margin:0 auto 6px;
+    filter:drop-shadow(0 14px 22px rgba(200,95,130,.22));animation:bob 3.2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  h1{font-size:clamp(44px,8vw,72px);font-weight:800;letter-spacing:-.03em;margin:6px 0 8px;
+    background:linear-gradient(120deg,var(--ink) 28%,var(--pink-ink) 120%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tag{font-size:clamp(18px,2.6vw,23px);color:var(--ink2);max-width:560px;margin:0 auto 26px}
+  .cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--pink),#ff7ea6);
+    color:#fff;font-weight:800;font-size:18px;text-decoration:none;padding:15px 30px;border-radius:999px;
+    box-shadow:0 10px 26px rgba(200,95,130,.32);transition:transform .15s ease, box-shadow .15s ease}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(200,95,130,.4)}
+  .meta{margin-top:14px;color:var(--ink3);font-size:14.5px}
+  .meta b{color:var(--ink2)}
+
+  section{padding:46px 0}
+  h2{font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.02em;text-align:center;margin:0 0 6px}
+  .sub{text-align:center;color:var(--ink2);max-width:580px;margin:0 auto 30px}
+
+  /* moods showcase */
+  .moods{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+  .mood{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 8px 12px;text-align:center;
+    box-shadow:0 6px 18px rgba(180,120,160,.08)}
+  .mood img{width:74px;height:74px}
+  .mood .m{font-weight:700;font-size:13px;margin-top:6px}
+  .mood .a{color:var(--ink3);font-size:11.5px}
+
+  /* features */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .feat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 22px;
+    box-shadow:0 8px 22px rgba(180,120,160,.08)}
+  .feat .ic{font-size:30px}
+  .feat h3{font-size:19px;margin:12px 0 6px}
+  .feat p{margin:0;color:var(--ink2);font-size:15px}
+
+  .trust{background:var(--sage-wash);border:1px solid #cde6c4;border-radius:20px;padding:24px 26px;text-align:center;
+    max-width:680px;margin:0 auto;color:#3f5e42;font-size:16px}
+  .trust b{color:#2f5233}
+
+  .final{text-align:center;padding:54px 0 16px}
+  footer{text-align:center;color:var(--ink3);font-size:13.5px;padding:30px 0 60px;border-top:1px dashed var(--line);margin-top:30px}
+
+  @media(max-width:760px){
+    .moods{grid-template-columns:repeat(3,1fr)}
+    .feats{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <img class="pet-hero" src="/sprites/neutral.png" alt="Digital Pat, a pixel-art kitten">
+      <h1>Digital Pat</h1>
+      <p class="tag">A tiny pixel companion who lives on your Mac, quietly reacts to whatever you're doing — and brings your <b>friends' pets</b> onto your desktop too, so you can see what they're up to. 🐾</p>
+      <a class="cta" href="/downloads/DigitalPat-2.8.1.dmg">🐱 Download for macOS</a>
+      <div class="meta"><b>Free</b> · macOS 13+ · Apple Silicon &amp; Intel · <b>your pet is all-local; you share only your cute mood + character with friends you invite</b></div>
+    </header>
+
+    <section>
+      <h2>Your friends live on your desktop 🐾</h2>
+      <p>Add a friend with a one-tap invite link and their character hops onto your desktop — and yours onto theirs. Their pet quietly shifts in real time as they code, vibe, or slip into a meeting, so you always have a little sense of what your people are up to. Change your character or mood and it updates on their screen instantly. Works great with just two of you — or your whole crew.</p>
+    </section>
+
+    <section>
+      <h2>She notices what you're up to</h2>
+      <p class="sub">Pat sees which app is in front — and, in your browser, which site you're on — then slips into a matching little mood. She reads only the app and the site name, never the page or what you type.</p>
+      <div class="moods">
+        <div class="mood"><img src="/sprites/coding.png" alt=""><div class="m">Coding</div><div class="a">VS Code · Terminal</div></div>
+        <div class="mood"><img src="/sprites/meeting.png" alt=""><div class="m">Meeting</div><div class="a">Zoom · Meet</div></div>
+        <div class="mood"><img src="/sprites/browsing.png" alt=""><div class="m">Browsing</div><div class="a">Chrome · Safari</div></div>
+        <div class="mood"><img src="/sprites/creating.png" alt=""><div class="m">Creating</div><div class="a">Figma · Canva</div></div>
+        <div class="mood"><img src="/sprites/vibing.png" alt=""><div class="m">Vibing</div><div class="a">Spotify · YouTube</div></div>
+        <div class="mood"><img src="/sprites/idle.png" alt=""><div class="m">Napping</div><div class="a">when you're away</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>A little creature, not a widget</h2>
+      <p class="sub">Pat lives in your workspace and does her own cute thing — you can always pick her up and put her wherever you like.</p>
+      <div class="feats">
+        <div class="feat"><div class="ic">🪄</div><h3>Reacts to your apps</h3><p>Switch apps and she perks up and changes her little outfit to match the vibe.</p></div>
+        <div class="feat"><div class="ic">💗</div><h3>Pat her, she purrs</h3><p>Give her a click — she does a happy slow-blink and floating hearts drift up.</p></div>
+        <div class="feat"><div class="ic">🤏</div><h3>Drag her anywhere</h3><p>Grab her and she glides smoothly with your cursor. Drop her wherever feels right.</p></div>
+        <div class="feat"><div class="ic">🐾</div><h3>Stays out of your way</h3><p>By default she sits tidily in the top-right and just follows your cursor with a little lean. Want more? Turn on roaming and she'll hop around and peek from the edges.</p></div>
+        <div class="feat"><div class="ic">😴</div><h3>Naps when you're away</h3><p>Step away for a bit and she curls up in a corner for a cozy little snooze.</p></div>
+        <div class="feat"><div class="ic">🔒</div><h3>Stays on your Mac</h3><p>All local, zero network — nothing is ever sent anywhere. In the browser she peeks at just the site name (the domain) to match your vibe; never the page or your typing.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="trust">
+        <b>No tracker. No nags. No account.</b><br>
+        Digital Pat is just a sweet companion for your screen — she only ever cheers you on. She stays tucked in the top-right by default; hide her anytime, or let her roam if you want her to wander.
+      </div>
+    </section>
+
+    <div class="final">
+      <h2>Adopt a Pat 🐱</h2>
+      <p class="sub">She's waiting in the corner of your screen.</p>
+      <a class="cta" href="/downloads/DigitalPat-2.8.1.dmg">🐱 Download for macOS</a>
+      <div class="meta">v2.8.1 · signed &amp; notarized · just drag to Applications</div>
+    </div>
+
+    <footer>
+      Digital Pat · a tinytools app · made with 🤍 · everything stays on your Mac
+    </footer>
+
+  </div>
+</body>
+</html>

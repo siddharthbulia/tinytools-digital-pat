@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Pat · Friends-on-your-laptop — design spec</title>
+<style>
+  :root{ --bg:#fff7fb; --card:#fff; --ink:#241d35; --muted:#766e8c; --pink:#ff7eb6; --purple:#8b7bff;
+    --line:#efe6f4; --good:#15a06a; --warn:#e0922e; --bad:#e0567a; --code:#6b4ea8; }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#fff7fb,#f3f0ff);color:var(--ink);
+    font:15.5px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:30px 22px 90px}
+  header.hero{background:linear-gradient(135deg,#ff9ecb,#9d8bff);color:#fff;border-radius:22px;padding:30px 30px;
+    box-shadow:0 14px 44px rgba(157,139,255,.32)}
+  header.hero h1{margin:0 0 6px;font-size:27px;letter-spacing:-.4px}
+  header.hero p{margin:0;font-size:16px;opacity:.96}
+  .tldr{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);border-radius:14px;padding:12px 16px;margin-top:14px;font-size:14.5px}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 20px;margin:20px 0}
+  .toc h2{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px}
+  .toc a{color:var(--purple);text-decoration:none} .toc a:hover{text-decoration:underline}
+  section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:16px 0;
+    box-shadow:0 4px 16px rgba(43,36,64,.05)}
+  h2.sec{margin:0 0 12px;font-size:21px;letter-spacing:-.3px}
+  h3{margin:18px 0 6px;font-size:16px;color:var(--purple)}
+  p{margin:8px 0} ul{margin:8px 0;padding-left:22px} li{margin:4px 0}
+  .q{font-weight:800;font-size:16px;margin:16px 0 4px;color:var(--ink)}
+  .a{margin:2px 0 6px}
+  code{background:#f3eefb;color:var(--code);padding:1px 6px;border-radius:6px;font-size:13px;font-family:ui-monospace,Menlo,monospace}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#faf6ff;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  .rec{background:#eafaf2;border:1px solid #bfe9d2;border-left:5px solid var(--good)} .rec td,.rec th{border-color:#d6f0e2}
+  .leak{border-left:5px solid var(--bad);background:#fff0f4;border-radius:12px;padding:14px 18px;margin:16px 0}
+  .leak b{color:var(--bad)}
+  .tag{display:inline-block;border-radius:6px;padding:1px 8px;font-size:11.5px;font-weight:800}
+  .kill{background:#fde6ec;color:var(--bad)} .change{background:#fff2dc;color:var(--warn)} .keep{background:#e3f7ee;color:var(--good)}
+  .mock{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#1c1430;color:#ffd6e8;border-radius:12px;padding:14px 16px;white-space:pre;overflow:auto;line-height:1.5}
+  .lens{border-left:3px solid var(--line);padding-left:12px;margin:10px 0}
+  .lens .qn{font-style:italic;color:var(--muted);font-size:13.5px}
+  .decide{background:#f1eefe;border-radius:10px;padding:10px 14px;margin:8px 0}
+  .decide b{color:var(--purple)}
+  .muted{color:var(--muted)} .pill{font-weight:700}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Friends on your laptop — design spec 🐱🏠</h1>
+  <p>Interrogating the foundations: why a Room? 1:1 or group? why a Deck? — and what to build instead.</p>
+  <div class="tldr"><b>Headline:</b> six independent analyses converged on the same answer — <b>the Room and the Deck are both the wrong primitives.</b> The real primitive is a <b>mutual 1:1 friendship</b>; your friends are <b>always present</b> on your desktop; the loop is a <b>reciprocal poke</b> (which we removed and should bring back). Because the schema is already 1:1 under the hood, this is mostly a <i>teardown</i>, not a build.</div>
+</header>
+
+<div class="toc"><h2>Contents</h2>
+<ol>
+  <li><a href="#leak">⚠ Privacy leak to fix now</a></li>
+  <li><a href="#q">The founder's questions, answered</a></li>
+  <li><a href="#models">Three candidate models</a></li>
+  <li><a href="#rec">The recommended model</a></li>
+  <li><a href="#kkc">Keep / Kill / Change</a></li>
+  <li><a href="#plan">Phased build plan</a></li>
+  <li><a href="#decide">Open decisions for you</a></li>
+  <li><a href="#lenses">The six lenses</a></li>
+  <li><a href="#priorart">What the genre teaches</a></li>
+</ol></div>
+
+<div class="leak" id="leak">
+  ⚠ <b>Found a live privacy leak while doing this (independent of the redesign — worth fixing today).</b>
+  The current schema's <code>profiles_read</code> policy is <code>using (true)</code> — meaning <b>any anonymous user can read every profile (name + active character) globally</b>, not just people who share your room. The "Room" was never actually a privacy boundary. I can ship a one-line RLS hotfix (scope reads to "people you share a room/friendship with") right now, ahead of any redesign. <b>Want me to?</b>
+</div>
+
+<section id="q">
+<h2 class="sec">1 · The founder's questions, answered crisply</h2>
+
+<div class="q">Why do we need a "Room" at all? Is it the right primitive?</div>
+<p class="a"><b>No — kill it.</b> A Room is "a place anyone with the code can enter," but the product is "a toy for people who already like each other." That demands <b>consent</b>, and consent lives on a <b>friendship edge</b>, not a shared password. Three concrete failures prove it never earned its weight:</p>
+<ul>
+  <li>The default <code>PATPARTY</code> code drops a couple — your <i>primary</i> user — into a channel <b>with strangers</b>. That's the anti-intimacy failure mode.</li>
+  <li>"Extra Rooms = Pro" <b>taxes a basic need</b> (having two friend groups) behind the paywall.</li>
+  <li>Room-granular presence can't express "around for my partner, away for my team."</li>
+  <li>And the code confirms it: <code>join_room_by_code</code> grants membership by <i>possession of a string</i>, and <code>profiles_read</code> is global — the Room is a <b>leaky boundary, not a trust boundary.</b></li>
+</ul>
+<p class="a muted">The wireframes' own verdict: the Room is "purely a staging area" with no interactions of its own. A primitive whose only job is to feed another primitive is a smell.</p>
+
+<div class="q">Is communication 1:1, group, or broadcast?</div>
+<p class="a"><b>Presence is symmetric many-to-many</b> within your friends ("my people are around" — and if I can see you, you can see me; never silent one-way lurking). <b>Interaction is always directed 1:1</b> ("I miss <i>a person</i>; I poke <i>that person</i>"). No broadcast, no "poke the room." This is what makes the model <b>identical at n=2 and n=15</b> — scaling only adds more passive moods to glance at; the active signal never turns into a noisy group chat.</p>
+
+<div class="q">Why do we need a "Deck"/dock? Is bringing friends onto the desktop right?</div>
+<p class="a"><b>No — kill it as a gate.</b> The Deck splits presence (Room) from interaction (Deck), then gates <i>all</i> interaction on a staging step. The wireframe matrix is damning: in <b>"Both IN"</b> — the most common resting state — <b>zero interaction is possible</b>. At n=2, a Room window holding one person plus a separate Deck is absurd overhead. Friends should be <b>always present</b> the moment they're online; "which friends are drawn right now" becomes a purely <b>local, cosmetic</b> choice — never a network or consent act.</p>
+
+<div class="q">…and the other concepts?</div>
+<ul>
+  <li><b>Invite codes →</b> replace with a <b>one-tap invite link</b> that mints a single friendship edge <i>to you</i> on accept (reusable for seeding a crew; each accept = one edge). Capability-style "add a person," not "join a channel."</li>
+  <li><b>Character-as-self →</b> <b>keep it.</b> Picking your pixel avatar is the Tamagotchi/Memoji hook — the one questioned concept that survives untouched.</li>
+  <li><b>Pat (local-only) →</b> <b>fix it.</b> A pat that never reaches your friend is "affection that is theater." Make it a real per-edge event that reaches them.</li>
+</ul>
+</section>
+
+<section id="models">
+<h2 class="sec">2 · Three candidate end-to-end models</h2>
+<table>
+  <tr><th>Model</th><th>One-liner</th><th>Who it's for</th><th>Core tradeoff</th></tr>
+  <tr class="rec">
+    <td><b>A · Friend-graph + always-on shelf</b> <span class="tag keep">RECOMMENDED</span></td>
+    <td>"Your people just live on your laptop; poke the one you miss."</td>
+    <td>The pair <i>and</i> the 5–15 crew, one primitive</td>
+    <td>Teardown of shipped Room/Deck + a migration; per-edge presence fan-out (fine under the ~50-friend ceiling)</td>
+  </tr>
+  <tr>
+    <td>B · Rooms stay (status quo, hardened)</td>
+    <td>"Join a code, pull friends onto your desktop."</td>
+    <td>A crew that thinks of itself as a "space"</td>
+    <td>Zero build cost, but keeps the cold-start trap, the privacy leak, the Pro tax, and the dead "Both IN" state — fails its own n=2 wedge</td>
+  </tr>
+  <tr>
+    <td>C · 1:1 pairs only (maximal Locket)</td>
+    <td>"One bonded buddy, always there, with a shared streak."</td>
+    <td>Strictly a couple/duo</td>
+    <td>Maximum clarity &amp; stickiness, but throws away the crew market + the multiplayer backend already built; if the one bond goes cold, the product is dead</td>
+  </tr>
+</table>
+</section>
+
+<section id="rec">
+<h2 class="sec">3 · The recommended model (A) — and why</h2>
+<p><b>A mutual 1:1 friend graph; friends always present on a slim edge-anchored shelf; a reciprocal poke as the loop.</b></p>
+<ul>
+  <li><b>Primitive = friendship.</b> <code>friendships(a_uid, b_uid, accepted)</code> replaces <code>room_members</code>. A couple is "one edge." A crew is "everyone added each other." No primitive switch as you scale.</li>
+  <li><b>Discovery = a one-tap invite link</b> (<code>digital-pat://add?token=…</code>) that creates a single edge <i>to you</i> on accept. Tokens are <b>single-use, expiring, uid-bound, unguessable</b>, with an explicit <b>multi-use revocable</b> option for seeding a crew. The easy path is never the unsafe path.</li>
+  <li><b>Presence = symmetric, per-edge.</b> Each client owns one channel <code>presence:&lt;uid&gt;</code> carrying only <code>{charId, mood, lastActive}</code>; accepted friends subscribe (RLS-gated). A prominent <b>per-friend "appear away"</b> makes it opt-out, never silent. Payload stays <b>category-mood only</b> — never app/URL/window/keys.</li>
+  <li><b>Surface = always-on shelf.</b> Friends' pets live on a slim, edge-anchored, auto-hideable "windowsill" — always present, no staging. One representation per friend, always live-mood, always pokeable. <b>Escape hatch:</b> drag a pet <i>off</i> the shelf to let it roam free (the old playful free-floating delight, now opt-in instead of a precondition).</li>
+  <li><b>Interaction = the poke, brought back.</b> Re-wire the already-built <code>send_poke → pokes → Postgres-changes</code> path, swapping the gate from <code>is_member</code> to <code>is_friend</code>. Restores the daily loop + keeps free streaks / who-missed-you. <b>Make "pat" a real event too:</b> tapping a friend's pet sends affection that <i>reaches them</i> (hop + hearts on both screens, with local sender feedback) — fixing the three documented wireframe gaps.</li>
+</ul>
+<div class="mock">  ┌─ my desktop ───────────────────────────────┐
+  │                                    [my work] │
+  │                                              │
+  │  ░░ windowsill shelf (auto-hide) ░░░░░░░░░░░  │
+  │  🐱        🐰coding   🐼vibing   🐹away      │  ← friends, always there,
+  │  me        Ava        Ven        Sid          │     live mood, tap=pat, ⌥=poke
+  └──────────────────────────────────────────────┘
+  n=2 → the shelf just has you + one friend. No room. No deck. No code dance.</div>
+<p class="muted"><b>Why A over B/C:</b> B fails its own n=2 wedge (dead "Both IN" state, strangers-by-default, the live privacy leak) — by removing pokes, the shipped product iterated itself <i>back into</i> the low-frequency presence graveyard it set out to avoid. C is emotionally purest but discards the crew market and the assets already built (the 22 characters <i>are</i> the founder's crew). A serves both with one primitive, fixes the privacy hole, removes the Pro tax on a basic need, and is <b>nearly free to build because the schema is already 1:1.</b></p>
+<p><b>The one hard discipline:</b> if you later add "crews," keep them a <b>dumb personal saved-set lens</b> over your own edges (<code>group ⊆ accepted-friends</code>) — no join/leave/ownership/code. The moment a group gains those, it silently <i>becomes a Room</i> and you've rebuilt the overhead you just removed. Personal-groups first; promote to shared only on real demand; defer entirely past v-next.</p>
+</section>
+
+<section id="kkc">
+<h2 class="sec">4 · Keep / Kill / Change vs today</h2>
+<p><span class="tag kill">KILL</span></p>
+<ul>
+  <li>The <b>Room as a first-class concept</b> (channel, roster window, join-by-code, <code>room_members</code>, "extra Rooms = Pro").</li>
+  <li>The <b><code>PATPARTY</code> default code</b> + the shared-code security model.</li>
+  <li>The <b>Deck as an interaction gate</b> ("take out / send back" before you can pat or poke).</li>
+  <li><b>Local-only pat</b> (a no-op pretending to be affection) and the <b>recipient-deck-dependent poke landing</b> (illegible).</li>
+</ul>
+<p><span class="tag change">CHANGE</span></p>
+<ul>
+  <li><code>room_members</code> → <b><code>friendships</code> edge table</b>; <code>send_poke</code>'s gate → <b><code>is_friend</code></b>.</li>
+  <li>Presence keyed by room → <b>keyed by publisher</b> (<code>presence:&lt;uid&gt;</code>, friends subscribe RLS-gated).</li>
+  <li>Invite code → <b>single-use, expiring, uid-bound invite link</b> (+ optional revocable multi-use).</li>
+  <li><b><code>profiles_read</code> <code>using(true)</code> → friend-scoped</b> — ship this <i>immediately</i> (live leak).</li>
+  <li><b>"Appear away"</b> from a paint-toggle → a <b>real data-layer stop</b> of presence broadcast (per friend).</li>
+  <li><b>Monetization</b> re-based fully on AI-generation COGS + cosmetics; the "extra Rooms" SKU disappears.</li>
+</ul>
+<p><span class="tag keep">KEEP</span></p>
+<ul>
+  <li><b>Character-as-self</b> (22 predefined + generate-your-own) — the hook, untouched.</li>
+  <li>The <b><code>pokes</code> table, server rate-limit, <code>blocks</code>, streaks/who-missed-you</b> — already built, just re-pointed at friendships.</li>
+  <li><b>Anonymous auth + Keychain</b> identity (magic-link as the durable-identity backstop later).</li>
+  <li><b>Category-mood-only</b> presence payload + non-activating overlay etiquette.</li>
+</ul>
+</section>
+
+<section id="plan">
+<h2 class="sec">5 · Phased build plan</h2>
+<h3>v2.3 — the teardown + the loop (v-next minimal)</h3>
+<ol>
+  <li><b>Hotfix now (independent):</b> patch <code>profiles_read</code> to friend-scoped. (Live leak.)</li>
+  <li><code>friendships</code> + <code>friend_requests</code> tables; request/accept RPCs; swap <code>send_poke</code> gate to <code>is_friend</code>.</li>
+  <li>Per-user presence channel <code>presence:&lt;uid&gt;</code> + RLS subscription auth; client <code>RoomStore → FriendStore</code> with subscribe-all / teardown-all on sleep/wake.</li>
+  <li><b>Always-on shelf</b> replaces the Room window + Deck; one live-mood pet per online friend; menu-bar roster popover for overflow; density cap.</li>
+  <li><b>Bring back the poke</b> (re-wire existing path) + <b>make pat a real per-edge event</b> with both-sided feedback. Keep streaks/who-missed-you.</li>
+  <li>One-tap invite link (single-use, expiring, uid-bound) + deep-link accept.</li>
+  <li><b>Migration:</b> convert each existing room's co-members into mutual friendships (one-time backfill) or an in-app "re-add your people" prompt — messaged as a <b>privacy upgrade</b>, not a regression.</li>
+  <li>Prominent <b>per-friend "appear away"</b> (real broadcast stop) + one-tap block.</li>
+</ol>
+<h3>v2.4 — fast-follow</h3>
+<ul>
+  <li>Cross-member <b>custom-sprite sync</b> via Supabase Storage (RLS keyed on friendship; payload never carries sprite bytes; orphan cleanup on edge removal).</li>
+  <li><b>Describe-to-create at volume</b> + credit packs; cosmetics/themes; custom poke phrases (author-time presets, never live free text).</li>
+  <li>Magic-link cross-device merge (durable identity for block-as-safety).</li>
+</ul>
+<h3>Later (only on real demand)</h3>
+<ul>
+  <li><b>Personal "crew" groups</b> — a dumb saved-set lens over edges. Hold the <code>group ⊆ friends</code> invariant in schema. Promote to shared objects only if users genuinely need a shared roster.</li>
+</ul>
+</section>
+
+<section id="decide">
+<h2 class="sec">6 · Open decisions for you (with my lean)</h2>
+<div class="decide"><b>1. Crew of 5–15: real target or n=2 only?</b> Sets how much shelf-density/overflow to build. <i>Lean: keep crew secondary — the friend graph serves it for free, so don't pay for it upfront.</i></div>
+<div class="decide"><b>2. Crew "groups": personal lenses or shared objects?</b> The single call that determines whether you truly escaped the Room. <i>Lean: personal-first; escalate only on demand.</i></div>
+<div class="decide"><b>3. Poke to an offline friend: deliver on next launch ("X poked you while away") or silently drop?</b> Biggest data-model fork. <i>Lean: log to <code>pokes</code> for streak math, but never surface as a chat history — ephemeral in the moment, persistent only for the loop.</i></div>
+<div class="decide"><b>4. Pat vs poke: two affordances or one?</b> <i>Lean: poke = directed nudge that reaches them; pat = softer affection that also transmits (hop + hearts on their pet). Both real; neither local-only.</i></div>
+<div class="decide"><b>5. "Appear away": global or per-friend?</b> <i>Lean: per-friend (the graph's native strength), default-visible to friends.</i></div>
+<div class="decide"><b>6. Identity durability before launch:</b> require magic-link before block-as-safety, or accept reinstall-orphans until v2.4? <i>Lean: ship anon + mutual-accept as the re-entry barrier now; magic-link later.</i></div>
+<div class="decide"><b>7. Friend-count ceiling + graceful degradation</b> for presence fan-out (e.g. subscribe only to pinned/on-screen friends past N). Set the cap explicitly.</div>
+</section>
+
+<section id="lenses">
+<h2 class="sec">7 · The six lenses (each reached the same place)</h2>
+<div class="lens"><h3>Social unit</h3><div class="qn">Room vs 1:1 edge vs friend-graph?</div>→ <b>Friend graph</b>; a "group" is a thin personal lens, not a channel. The Room is borrowed scaffolding hiding a 1:1 graph the schema already implements.</div>
+<div class="lens"><h3>Interaction surface</h3><div class="qn">Why a Deck/dock?</div>→ <b>Always-present</b> on a slim edge-anchored shelf (one representation per friend), drag-off to roam as opt-in delight. Delete the Room-then-Deck staging ritual.</div>
+<div class="lens"><h3>Communication topology</h3><div class="qn">1:1, group, or broadcast?</div>→ <b>Symmetric presence + directed 1:1 poke/message.</b> Three payloads only: mood (passive), poke (nudge), message (poke + tiny preset/emoji). No threads, no inbox.</div>
+<div class="lens"><h3>Consent / privacy</h3><div class="qn">Who sees whom, on whose terms?</div>→ <b>Mutual-consent friend graph</b>; single-use expiring uid-bound invites; fix the global <code>profiles_read</code> leak now; "appear away" as a real broadcast stop.</div>
+<div class="lens"><h3>Prior art</h3><div class="qn">How does the genre solve this?</div>→ Locket/BeReal/Find My all use <b>mutual-accept friend graphs + always-on presence + a light reciprocal signal</b> — never a code-joined room, never a manual staging dock.</div>
+<div class="lens"><h3>Tech architecture</h3><div class="qn">Simplest correct backend?</div>→ <code>friendships</code> + <code>friend_requests</code>; one <code>presence:&lt;uid&gt;</code> channel per user that friends subscribe to (RLS-authorized); keep <code>pokes</code>/<code>blocks</code>/<code>usage_counters</code>; custom sprites via Storage later.</div>
+</section>
+
+<section id="priorart">
+<h2 class="sec">8 · What the genre teaches</h2>
+<table>
+  <tr><th>Product</th><th>The one lesson</th></tr>
+  <tr><td><b>Locket</b></td><td>BORROW: the person is just <i>there</i> — zero steps to "open." The death of the Deck.</td></tr>
+  <tr><td><b>Find My</b></td><td>BORROW the consent model, AVOID the code: presence is per-person, mutually granted, individually revocable.</td></tr>
+  <tr><td><b>Discord</b></td><td>AVOID importing servers/rooms — those earn their place hosting <i>strangers at scale</i>; your users already like each other.</td></tr>
+  <tr><td><b>Yo / Poke</b></td><td>BORROW: a single content-free reciprocal nudge can be a real daily loop. Bring the poke back.</td></tr>
+  <tr><td><b>Gather / Tandem</b></td><td>AVOID the spatial-room metaphor — high-effort co-presence that becomes a chore.</td></tr>
+  <tr><td><b>Tamagotchi / Neko Atsume</b></td><td>BORROW: the pet form-factor creates affection + a reason to glance even when nothing's happening.</td></tr>
+  <tr><td><b>BeReal</b></td><td>BORROW: mutual + low-pressure + symmetric beats performative; no vanity metrics = feels safe.</td></tr>
+</table>
+</section>
+
+<footer>Digital Pat · friends-on-your-laptop design spec · synthesized from a 6-lens exploration · <span class="muted">apps/digital-pat/friend-system-spec.html</span></footer>
+</div>
+</body>
+</html>

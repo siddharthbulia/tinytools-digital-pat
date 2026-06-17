@@ -1,0 +1,210 @@
+<section id="architecture" class="card">
+  <div class="kicker"><span class="num">07</span> Architecture &amp; streams</div>
+  <h2>Four cozy layers, four contracts, six parallel paws</h2>
+  <p class="lead kitten">under pat's fur, four little parts each do one small job 🧶 — one holds the art, one picks the mood, one notices the day, and one decides when to wander or purr.</p>
+  <p class="lead">pat is built as four decoupled layers that only talk through four small, frozen contracts. lock the contracts first and every workstream below can be built in parallel — the animator never waits on the sensor folks, the sensor folks never wait on the diary.</p>
+
+  <div class="callout delight">
+    <span class="ico">✨</span>
+    <span class="ct"><b>why decouple</b> the kitten on screen should never stutter while a sensor wakes up or the diary writes to disk. rendering runs its own gentle clock; everything else just hands it tidy signals.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+  <h3>The four layers (top = what you see, bottom = what it knows)</h3>
+  <div class="layers">
+
+    <div class="layer l1">
+      <span class="layer-n">04</span>
+      <div class="layer-b">
+        <div class="layer-t">Behaviour — the companion loop</div>
+        <div class="layer-d">the personality. decides when pat wanders, chases the cursor, naps, asks for a pat, or fondly recalls the day. owns tend-me (energy / affection / mood expressed as posture, never as bars), helper moments, and the cozy daily-recap ritual. picks <em>intent</em>; never draws a pixel itself.</div>
+      </div>
+      <span class="layer-tag">intent &amp; mood</span>
+    </div>
+
+    <div class="layer l2">
+      <span class="layer-n">03</span>
+      <div class="layer-b">
+        <div class="layer-t">Functionality — sensors &amp; local data</div>
+        <div class="layer-d">the quiet senses: frontmost app, idle time, time-of-day, plus local persistence for tend-me state and the cozy day log. framed as <em>noticing</em>, not measuring — it reads the app name to pick a sweet mood, then forgets the rest. 100% local, zero network.</div>
+      </div>
+      <span class="layer-tag">signals in</span>
+    </div>
+
+    <div class="layer l3">
+      <span class="layer-n">02</span>
+      <div class="layer-b">
+        <div class="layer-t">Poses &amp; Moods — the state machine</div>
+        <div class="layer-d">maps triggers → state → animation. holds the rules: idle ↔ walk ↔ groom ↔ nap, mood swaps on app change, and the pat → slow-blink purr override. handles slow, eased transitions and blending. it knows <em>which</em> animation, not <em>how</em> it's drawn.</div>
+      </div>
+      <span class="layer-tag">state logic</span>
+    </div>
+
+    <div class="layer l4">
+      <span class="layer-n">01</span>
+      <div class="layer-b">
+        <div class="layer-t">Sprite Gallery — assets &amp; manifest</div>
+        <div class="layer-d">the art library: base kitten rig + swappable prop layers (glasses, hoodie, beret, headphones, nightcap…) and every animation clip, indexed by a manifest. the renderer reads the manifest and plays clips. swap the manifest, swap the whole look — no code changes.</div>
+      </div>
+      <span class="layer-tag">the art</span>
+    </div>
+
+  </div>
+
+  <div class="spacer-m"></div>
+  <h3>The four contracts that decouple them</h3>
+  <p class="muted">freeze these four shapes on day one. once they're locked, the seams between layers are stable and every stream below can run on its own.</p>
+  <div class="grid2">
+    <div>
+      <div class="chip-row">
+        <span class="pill sage">contract A</span>
+        <span class="label">sprite gallery ↔ rendering</span>
+      </div>
+      <p class="note"><b>Sprite manifest.</b> json index of every clip + prop: id, frames/duration, anchor, loop vs one-shot, layer (base / prop / overlay). the renderer plays by id; art can be re-drawn or re-styled without touching engine code.</p>
+    </div>
+    <div>
+      <div class="chip-row">
+        <span class="pill lilac">contract B</span>
+        <span class="label">sensors ↔ behaviour</span>
+      </div>
+      <p class="note"><b>Signal bus.</b> a tiny stream of debounced events: <em>frontmost = "coding"</em>, <em>idle = 2m</em>, <em>time = evening</em>, <em>dragging = true</em>. behaviour subscribes; sensors stay dumb. raw app names never leave this bus.</p>
+    </div>
+    <div>
+      <div class="chip-row">
+        <span class="pill butter">contract C</span>
+        <span class="label">behaviour ↔ state machine</span>
+      </div>
+      <p class="note"><b>State-machine config.</b> a declarative table of states, triggers, and transitions (with easing + priority, so pat/purr always wins). behaviour sets inputs; the machine resolves the pose. tunable without recompiling personality.</p>
+    </div>
+    <div>
+      <div class="chip-row">
+        <span class="pill ghost">contract D</span>
+        <span class="label">functionality ↔ recap</span>
+      </div>
+      <p class="note"><b>Local stats schema.</b> the cozy day log on disk — soft, minimal, qualitative ("mostly creating," "a few naps"). opt-in, local-only, no counts that feel like a scoreboard. the diary reads it; tend-me writes energy/affection here too.</p>
+    </div>
+  </div>
+
+  <div class="callout avoid">
+    <span class="ico">🚫</span>
+    <span class="ct"><b>feels like tracking</b> contract D must stay qualitative. no hour totals, no "you spent X in Y," no streak counters. if the schema starts to look like analytics, it's wrong — store moods and gentle proportions, not metrics.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+  <h3>Parallel build streams (revised scope)</h3>
+  <p class="muted">dropped from scope: XP / leveling, wardrobe-as-reward grind, social sharing. heavy emphasis lands on <b>animation &amp; rendering</b> — the walk-on-drag is the star. each stream below names what it builds and what it depends on.</p>
+
+  <div class="streams">
+
+    <div class="stream s-render">
+      <div class="stream-h"><span class="ico">🎬</span> Animation &amp; Rendering <span class="pill">the star</span></div>
+      <ul>
+        <li><b>builds:</b> the always-on-top transparent renderer + the gentle idle clock (breathe, blink, ear-twitch, tail-flick), and the headline <em>walk-on-drag</em>: grab → stand → little legs step in the drag direction, tail balancing → settle on drop. plus the slow-blink purr (eased eyes, soft body vibration, floating hearts).</li>
+        <li><b>depends on:</b> contract A (sprite manifest) + contract C (state config). nothing else — runs from day one on placeholder art.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-store">
+      <div class="stream-h"><span class="ico">🎨</span> Sprite Gallery</div>
+      <ul>
+        <li><b>builds:</b> base kitten rig, swappable prop layers for all 8 moods + neutral + pat, every animation clip (idle / walk / groom / stretch / nap / chase / purr), and the manifest that indexes them.</li>
+        <li><b>depends on:</b> contract A only. ships its own clips against the frozen manifest shape; renderer picks them up for free.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-state">
+      <div class="stream-h"><span class="ico">🧩</span> Mood / State Engine</div>
+      <ul>
+        <li><b>builds:</b> the state machine — idle ↔ wander ↔ groom ↔ nap loops, mood swaps on app change, pat/purr priority override, and slow eased transitions between every state.</li>
+        <li><b>depends on:</b> contract C (state config) + reads the signal bus (B). decoupled from how clips are drawn.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-sensors">
+      <div class="stream-h"><span class="ico">🌱</span> Sensors / Data</div>
+      <ul>
+        <li><b>builds:</b> frontmost-app reader, idle detector, time-of-day, the local cozy day-log writer + tend-me persistence. publishes debounced events onto the signal bus. zero network, no extra permissions.</li>
+        <li><b>depends on:</b> contracts B (signal bus) + D (stats schema). totally independent of art and rendering.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-render">
+      <div class="stream-h"><span class="ico">🐾</span> Tend-me &amp; Companion</div>
+      <ul>
+        <li><b>builds:</b> the engagement loop — energy / affection / mood as <em>behaviour</em> (sleepy curl when neglected, happy slow-blink when patted), giving a treat, letting it nap, chasing the cursor, gentle helper moments. never dies, never guilt-trips.</li>
+        <li><b>depends on:</b> sets inputs via contract C; reads/writes tend-me state via contract D. drives intent, hands poses to the engine.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-state">
+      <div class="stream-h"><span class="ico">📖</span> Daily-Recap Ritual</div>
+      <ul>
+        <li><b>builds:</b> "pat's diary" — the opt-in cozy end-of-day card where the kitten fondly recalls the day <em>with</em> you ("we had a cozy day together"), warm, lowercase, minimal numbers, gentle proportion rows only.</li>
+        <li><b>depends on:</b> contract D (local stats schema). reads the soft day log; never a guilt report.</li>
+      </ul>
+    </div>
+
+    <div class="stream s-store">
+      <div class="stream-h"><span class="ico">🪟</span> Surfaces / UI</div>
+      <ul>
+        <li><b>builds:</b> the menu-bar dropdown (pat / treat / nap / settings), onboarding with the local-only trust promise, the settings toggles, and window chrome (~120px floating pet, draggable, transparent).</li>
+        <li><b>depends on:</b> sends user intents into behaviour; surfaces the diary card. light coupling, builds against stubs.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="callout delight">
+    <span class="ico">🔓</span>
+    <span class="ct"><b>contracts first = parallel everything</b> on day one we freeze A · B · C · D. after that, all seven streams build against stable shapes at once — the renderer animates placeholder boxes, the artist fills the manifest, the sensors push events, the diary reads the schema. they only meet at integration.</span>
+  </div>
+
+  <div class="spacer-m"></div>
+  <h3>How a single signal flows through all four layers</h3>
+  <p class="muted">a tiny storyboard: you open Figma → the kitten ends up wearing a beret. each frame is one layer doing its one job.</p>
+  <div class="filmstrip">
+    <figure class="frame">
+      <div class="cell"><span class="step-no">1</span>🌱</div>
+      <figcaption class="cap">sensors notice <em>frontmost = Figma</em>, debounce, publish to the <em>signal bus</em> (contract B)</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">2</span>🐾</div>
+      <figcaption class="cap">behaviour reads the bus, picks intent: <em>"creating mood"</em>, sets a state-machine input (contract C)</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">3</span>🧩</div>
+      <figcaption class="cap">state machine resolves the pose and a <em>gentle eased</em> transition into the creating state</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><span class="step-no">4</span>🎨</div>
+      <figcaption class="cap">renderer looks up the <em>beret + brush</em> clip in the manifest (contract A) and plays it</figcaption>
+    </figure>
+    <figure class="frame">
+      <div class="cell"><img class="px" src="sprites/creating.png" alt="pat creating"><div class="pet-tag">creating</div></div>
+      <figcaption class="cap">on screen: pat puts on a little beret. slow, soft, never snappy</figcaption>
+    </figure>
+  </div>
+
+  <div class="spacer-m"></div>
+  <h3>And where it all lives — on your desktop</h3>
+  <div class="desktop">
+    <div class="menubar">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="mb-item">Finder</div>
+      <div class="mb-item">Figma</div>
+      <div class="tray"><span class="pat-glyph">🐱</span></div>
+      <div class="clock">4:12</div>
+    </div>
+    <div class="screen">
+      <div class="stage">
+        <div class="pin-br">
+          <div class="bubble kitten above">we had a cozy day together ♥</div>
+          <div class="pet"><img class="px" src="sprites/creating.png" alt="pat creating"><div class="pet-tag">creating</div></div>
+          <div class="shadow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="note center muted">~120px, always-on-top, transparent, draggable — plus the tiny tray glyph. all four layers, one sweet kitten, zero network calls.</p>
+
+</section>

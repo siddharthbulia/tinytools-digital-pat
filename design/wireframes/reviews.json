@@ -1,0 +1,169 @@
+[
+  {
+    "overall": "Strong direction fidelity overall \u2014 this reads unmistakably as a cute, shy HELPER companion, not a tracker. The animation-as-star mandate is honored emphatically: the walk-on-drag is the single most-detailed, most-annotated storyboard (grab \u2192 stand \u2192 toddle \u2192 steer \u2192 drop \u2192 settle), explicitly tagged \"founder's favorite / most detailed / the money beat,\" and it reappears in onboarding (\"teach by doing\"), settings, and the architecture stream that's literally labeled \"the star.\" Idle life (breathe/blink/ear-twitch/tail-flick/wander/groom/stretch/chase), the slow-blink purr with hearts, and the sleepy-curl-on-neglect are all present and correctly framed as the readout. Tend-me is in and gentle: explicit, repeated \"never dies / never guilt-trips / no streaks / no penalties / neglect = sleepy loaf, always a warm welcome\" callouts. XP, leveling, wardrobe-as-reward, and social sharing are all explicitly CUT \u2014 the cosmetics section even says \"not rewards\u2026 no unlock at 7 days.\" The daily recap (\"Pat's Diary\") is the clear, cozy habit anchor with \"memory, not measurement,\" warm first-day/quiet-day empty states, opt-in toggles, and a no-guilt dismiss. Privacy is surfaced strongly in onboarding and settings.\n\nThe ONE meaningful drift: the document ships proportional fill bars (the .softbar component with literal percentage widths like 38%/82%/62%/34%) in BOTH the tend-me soft-status menu AND Pat's Diary. A horizontal bar whose LENGTH encodes a value is the canonical dashboard/tracker visual \u2014 and the diary uses three of them stacked (building / together-time / cozy breaks), which reconstructs exactly the \"time-breakdown chart\" the doc repeatedly warns against in its own \ud83d\udeab callouts. The feathered mask and qualitative words (\"mostly\", \"some\") soften it but do not remove the core tracker semantics: it still reads as a measured day. This is the document arguing against tracking while building the most tracker-shaped element in the file. Everything else is on-direction; this is what holds the score back from a 9.",
+    "score": 8,
+    "findings": [
+      {
+        "severity": "high",
+        "area": "Tend-me soft-status + Pat's Diary \u2014 the .softbar proportional bars",
+        "issue": "The wireframe ships horizontal proportional fill bars with literal encoded values (width:38%, 82%, 66% in the tend-me menu; width:62%, 34%, 20% in the diary). A bar whose length encodes a quantity IS the canonical tracker/dashboard primitive. The diary stacks THREE of them (building / together-time / cozy breaks), which reconstructs the exact 'how your day broke down' chart the document's own \ud83d\udeab callouts forbid ('if it reads like a timesheet, it's wrong'). The feathered mask + words ('mostly','some') are mitigations bolted onto a fundamentally measurement-shaped widget \u2014 the user still perceives a measured, comparable day. This is the single clearest drift: the doc warns against tracking, then builds the most tracker-like element in it. 'together-time 34% some' is especially off-direction \u2014 it quantifies companionship as a proportion, directly contradicting 'never feel measured.'",
+        "fix": "Replace the proportional bars entirely with a non-quantitative visual that cannot read as a meter. Options: (a) a small cluster of mood STICKERS/icons sized by salience ('lots of \ud83d\udcbb, a couple of \ud83d\udc54, one \ud83c\udf3f') with no shared baseline to compare lengths against; (b) a single soft illustrated 'shape of the day' doodle (a gentle hill, a meandering paw-print path) that is impressionistic, not measured; or (c) drop the proportion row from the diary altogether and let the kitten's prose carry it ('lots of building this morning\u2026 a couple of calls'). For the tend-me hover/menu, prefer the kitten's voice line ('feeling cozy \u2661 a lil sleepy tho') and cut the energy/affection/cozy bars \u2014 three fills with feathered ends still read as battery/hunger gauges, which the doc explicitly bans. If any proportion visual survives, it must NOT be a single-axis horizontal bar with comparable lengths."
+      },
+      {
+        "severity": "low",
+        "area": "Header / hero markup vs. design system",
+        "issue": "The hero markup uses class 'kicker' ('Wireframes \u00b7 v1 direction') and a bare <header> without the .hero class, so the hero-pet bob animation, gradient H1, and centered hero styling defined in the CSS are never applied. Minor, but the top of a 'polished, designish' wireframe deliverable lands flatter than the system intends, which slightly undercuts the 'animation is the star' first impression.",
+        "fix": "Wrap the title block in <header class=\"hero\"> and use the .eyebrow class instead of .kicker for the top label; add a .hero-pet \ud83d\udc31 element so the very first thing the reader sees is the bobbing kitten \u2014 reinforcing 'animation is the star' from frame one."
+      },
+      {
+        "severity": "low",
+        "area": "Onboarding Step 1 bubble \u2014 leaked placeholder markup",
+        "issue": "The greeting bubble renders literal escaped tag text: 'hi! i'm your new little buddy <span>wave</span> \ud83d\udc3e' \u2014 a stray placeholder that was meant to be a wave gesture annotation, not user-facing copy. In a fidelity review this is a small but real polish miss in the kitten's signature voice moment (first impression copy).",
+        "fix": "Replace with clean kitten-voice copy, e.g. 'hi! i'm your new little buddy \ud83d\udc3e (waves)' or move the 'wave' note into a separate annotation, so the microcopy stays in the sweet lowercase voice without leaked markup."
+      },
+      {
+        "severity": "low",
+        "area": "Diary prose verging on a day-timeline",
+        "issue": "The sample diary lines ('lots of building this morning\u2026 a couple of calls came and went\u2026 a nice break around 3') are warm and on-voice, but combined with the proportion bars they begin to reconstruct a chronological activity log. On their own the lines are fine; paired with measured bars they tip toward 'here is your day, accounted for.'",
+        "fix": "Once the proportion bars are removed (finding 1), keep the prose but bias it toward feeling/companionship over a sequence of logged activities \u2014 e.g. lead with 'we had a cozy day together' and 'my favorite part was the break' rather than an ordered recap of work blocks, so the diary stays 'memory, not measurement.'"
+      },
+      {
+        "severity": "low",
+        "area": "Helper-basics breadth vs. 'not a productivity tool' identity",
+        "issue": "Helper basics bundles greeting, stretch nudge, time/date, one-off reminder, focus-together, and water/blink-break. Individually each is gentle and opt-in (well-guarded with \ud83d\udeab callouts), but the stretch/water/focus cluster collectively skews toward wellness-coach territory, which is adjacent to the 'productivity/measurement' vibe the direction wants to avoid. The doc defends each one, but the aggregate density of 'nudges' is the area most at risk of feeling like a coach rather than a companion.",
+        "fix": "Emphasize in the doc that helpers default to OFF/quiet except greetings (the master-controls note says 'errs toward quiet' \u2014 make that the literal default state shown in toggles, where stretch/water are currently 'on'). Consider framing stretch/water purely as the kitten doing the action for itself (Pat stretches because Pat is stiff), with the invitation strictly secondary, so it never reads as Pat monitoring the user's body/habits."
+      }
+    ]
+  },
+  {
+    "overall": "A high-effort, largely cohesive cozy-pastel design system with a genuinely strong component library (tokens, callouts, softbars, pills, layered architecture, the menu-bar mock) and an excellent filmstrip mechanic (step chips, pink keyword highlights, connecting arrows, dir-arrow). The cozy Gen-Z feel, restrained one-pink-accent palette, soft shadows, and rounded radii are tasteful and consistent. HOWEVER, the document has serious polish defects that a render exposes immediately \u2014 the most damaging being that the entire hero/title (the single most prominent element) renders unstyled because the markup omits class=\"hero\", so the page opens looking like a rough draft instead of a designed document. There is also visible AI-slop debris (a literal \"<span>wave</span>\" string in the onboarding bubble), a CSS hex typo, flex-wrap layout breakage in the three-soft-states grid, and inconsistent application of the signature pink-keyword treatment across filmstrips. The filmstrips, while well-built as a mechanic, fail the product's own \"animation is the star\" thesis because every frame uses the identical \ud83d\udc31 placeholder \u2014 the motion arc is carried entirely by caption text and is not visually skimmable. Verified by rendering the actual header, bubble, states grid, and filmstrip in headless Chrome. Strong bones, but the broken hero + AI artifacts drag the polish down hard; these are all fixable in well under an hour.</overall>\n<parameter name=\"score\">6",
+    "findings": [
+      {
+        "severity": "critical",
+        "area": "Hero / header \u2014 broken styling on the most prominent element",
+        "issue": "The <header> markup has NO class=\"hero\", but every hero style is keyed to header.hero (centered layout, 64px clamp title, the pink gradient text effect, the bobbing .hero-pet, .eyebrow pill, header.hero .sub). All of it is orphaned dead CSS. Confirmed by render: the title shows as a small, LEFT-aligned, flat dark heading on the page background \u2014 no centering, no gradient, no hero pet emoji. The markup instead uses .kicker (a card-internal component) and an undefined .accent span. The document's single most important visual element opens looking like an unstyled draft.",
+        "fix": "Add class=\"hero\" to the <header> element. Replace <span class=\"kicker\"> with <span class=\"eyebrow\"> to match the designed pill. Add the <div class=\"hero-pet\">\ud83d\udc31</div> element above the h1 so the bobbing hero pet renders. Define a .accent rule (or remove the <span class=\"accent\"> since the whole h1 already gets the gradient via background-clip). Re-render and confirm the title is centered, large, and gradient-filled."
+      },
+      {
+        "severity": "high",
+        "area": "Onboarding Step 1 \u2014 visible AI-slop artifact in microcopy",
+        "issue": "The Step-1 greeting bubble literally renders the text: \"hi! i'm your new little buddy <span>wave</span> \ud83d\udc3e\" \u2014 the &lt;span&gt;wave&lt;/span&gt; is escaped HTML that displays as raw visible text. Confirmed by render. This is debris in the most important 'meet your pet' first-impression moment and instantly reads as machine-generated/unfinished.",
+        "fix": "Remove the escaped tag. Either drop it entirely (\"hi! i'm your new little buddy \ud83d\udc3e\") or make it a real motion annotation in the doc's annotation style, e.g. wrap 'wave' in a styled <span class=\"label\">waves</span> or move it to a note. Audit the rest of the doc for any other escaped-tag leftovers."
+      },
+      {
+        "severity": "high",
+        "area": "Motion filmstrips \u2014 frames don't visually convey the pose progression",
+        "issue": "Every frame in every filmstrip uses the identical \ud83d\udc31 emoji placeholder (confirmed by render of the walk-on-drag strip). For a product whose stated thesis is 'animation is the star,' the motion arc (grab\u2192stand\u2192walk\u2192steer\u2192drop\u2192settle) is carried 100% by caption text \u2014 the six cells are visually identical and monotonous. A filmstrip should be visually skimmable; this one forces reading every caption. It also reads as generic/AI-generated.",
+        "fix": "Differentiate placeholders per frame even within wireframe constraints: vary the emoji to imply pose (e.g. \ud83d\udc31\u2192\ud83d\ude40\u2192\ud83d\udc08\u2192\ud83d\udc08\u200d\u2b1b\u2192\ud83d\udc31), or apply CSS transforms (scaleY squash on 'grab', translateX + skew on 'walk', rotate on 'stretch'), or add a tiny in-cell pose label chip. At minimum, make the walk-on-drag strip's motion legible at a glance since it's the headline interaction."
+      },
+      {
+        "severity": "medium",
+        "area": "Three-soft-states grid \u2014 flex-wrap breaks the per-column layout",
+        "issue": "In the Tend-me 'three soft states' cards, the pet\u2192arrow\u2192pet comparison uses .row with flex-wrap:wrap inside a narrow 3-up grid column. Confirmed by render: column 1 keeps pet\u2192pet inline (arrow points at the second pet), but columns 2 and 3 wrap the second pet onto a new line, leaving the \u2192 arrow pointing at empty space and producing a misaligned 2-up stack. The three 'parallel' cards end up with pets, arrows, and captions at different vertical positions \u2014 looks unfinished and inconsistent.",
+        "fix": "For these comparison rows, set flex-wrap:nowrap and shrink the pets (use a smaller .pet variant ~64px) so pet\u2192arrow\u2192pet fits one line in the column, OR commit to an intentional vertical layout (pet / \u2193 arrow / pet) applied identically to all three columns. Either way, make all three columns lay out identically and align their captions to a shared baseline."
+      },
+      {
+        "severity": "medium",
+        "area": "Filmstrip captions \u2014 inconsistent pink-keyword treatment",
+        "issue": "The signature 'delight beat' styling (.frame .cap em { color: pink; font-style: normal }) is scoped only to figcaptions with class=\"cap\". Two filmstrips use bare <figcaption> (Tend-me 'example moment' strip and the Settings drag-walk strip), so their <em> keywords render as default grey italic instead of the upright pink highlight used everywhere else. The motion-keyword visual language is applied inconsistently across the document.",
+        "fix": "Add class=\"cap\" to every <figcaption> inside .frame (or change the rule to .frame figcaption em so the styling applies regardless of class). Sweep all filmstrips for uniformity."
+      },
+      {
+        "severity": "low",
+        "area": "CSS hygiene \u2014 invalid hex typo",
+        "issue": ".layer.l3 .layer-n has `background:#dcecc f;` (stray space mid-hex) immediately overridden by `background:#dcecd0;`. The browser recovers (drops the invalid declaration, second one wins) so it renders correctly, but it's dead/broken code that fails any linter and signals sloppiness in the design-system source.",
+        "fix": "Delete the broken `background:#dcecc f;` declaration, keep only `background:#dcecd0;`."
+      },
+      {
+        "severity": "low",
+        "area": "Nested card padding \u2014 heavy inner spacing in 3-up grids",
+        "issue": "Several sections nest .card inside .card with style=\"box-shadow:none\" to make sub-cards, but the inner cards inherit the full 34px card padding. Inside a 3-column grid (soft states, ways-to-tend, motion principles) this crowds content against narrow columns and wastes vertical space, making the dense sections feel slightly cramped relative to the airy hero/diary sections.",
+        "fix": "Introduce a .card.inner (or .subcard) modifier with reduced padding (~18\u201320px) and a smaller radius, and use it for all nested/3-up cards so spacing rhythm stays consistent with the rest of the system."
+      },
+      {
+        "severity": "low",
+        "area": "Component reuse \u2014 .kicker overloaded for two different roles",
+        "issue": ".kicker is the numbered section eyebrow (with a .num box: '01 Pet & Motion'), but in the Helper-basics section it's reused as a sub-section marker with single letters ('a \u00b7 time-of-day hello', 'b \u00b7 gentle stretch', '+ \u00b7 your controls'). Same visual weight as top-level section headers creates a flat hierarchy \u2014 sub-sections read as if they're peer sections, weakening the document's scannability.",
+        "fix": "Create a distinct lighter-weight .subkicker style (smaller, no boxed num or a differently-styled letter chip) for the a/b/c/d sub-sections so the hierarchy between section and sub-section is visually clear."
+      }
+    ]
+  },
+  {
+    "overall": "Strong, cohesive, voice-rich document that mostly nails the cozy lowercase kitten persona and covers the headline motion moments in loving detail. But it has one disqualifying voice break (Section 06 silently switches the kitten to \"he/him/his\" while every other surface uses gender-neutral \"it/them\"), a literal HTML rendering bug in the onboarding hero bubble, and several promised flows/states that are named but never actually wireframed (the reminder compose field, the diary scrapbook, the hidden/return state, multi-monitor motion). The 7 surfaces read as one document tonally, but the architecture surface drifts into engineering register and the menu surface drifts in voice. Score reflects: excellent ambition and microcopy, undercut by a consistency lapse a careful reader will immediately catch and a few \"told, not shown\" gaps. 6.5/10.",
+    "score": 6.5,
+    "findings": [
+      {
+        "severity": "critical",
+        "area": "Voice consistency \u2014 Section 06 Menu & settings",
+        "issue": "Section 06 silently regenders the kitten to masculine: 'hush him', 'tweak how he keeps you company', 'he only peeks at which app is in front', 'he occasionally gets up and walks', 'settles where you drop him', 'bring pat back / hide pat for now', 'pat does a quick shy wave before fading out'. Every OTHER surface (01\u201305, 07) uses gender-neutral 'it' / 'them' / 'pat' with no pronoun, which is what the locked direction implies ('you give IT a name', 'tend IT', 'it never dies'). A reader scrolling from Tend-me (it) into Menu (he) will feel a different writer wrote it. This is the single most jarring break in the document and it directly undercuts the 'one coherent document' goal.",
+        "fix": "Do a find-and-replace across Section 06 (and any stray 'he' in 07) to gender-neutral 'pat' / 'it' / 'them' to match 01\u201305. e.g. 'hush him' \u2192 'hush pat', 'how he keeps you company' \u2192 'how pat keeps you company', 'bring him back' \u2192 'bring pat back', 'drop him' \u2192 'drop pat'. Pick ONE pronoun policy (recommend 'it/them' since the kitten is unnamed-by-default and user-named) and state it once in a hidden design note so future edits stay consistent."
+      },
+      {
+        "severity": "high",
+        "area": "Rendering bug \u2014 Onboarding Step 1 hero bubble",
+        "issue": "The first onboarding speech bubble renders literally as: 'hi! i'm your new little buddy <span>wave</span> \ud83d\udc3e' \u2014 the author escaped the angle brackets (&lt;span&gt;) so the words 'wave' wrapped in visible markup show up as kitten dialogue. This is the very first line of microcopy a viewer reads in the most important screen (meet & name), and it currently reads as broken. It also breaks voice: the kitten appears to say the stage-direction 'wave' out loud.",
+        "fix": "Remove the stray markup from the spoken line. The bubble should read e.g. 'hi! i'm your new little buddy \ud83d\udc3e'. If a 'wave' annotation was intended, move it OUT of the bubble into a separate .note caption ('kitten lifts a paw and waves') the way other motion beats are annotated \u2014 never inside the kitten's spoken text."
+      },
+      {
+        "severity": "high",
+        "area": "Missing flow \u2014 Reminder compose UI (Section 04d)",
+        "issue": "The whisper-a-reminder help says 'you open whisper a reminder & type one line' and 'you type one reminder + a time', and the menu has a 'whisper a reminder\u2026' item \u2014 but the actual input surface (the text field / time picker where you type 'call mom at 5') is never wireframed. The filmstrip jumps from a keyboard emoji straight to 'okay i'll remember'. This is the only help that requires real user text input, so the absence is conspicuous: there's no shown answer to 'what does typing the reminder actually look like, and how do I set the time?'",
+        "fix": "Add a small wireframe of the compose popover near the kitten: one text field with placeholder in kitten voice (e.g. 'tell me one little thing\u2026'), a casual time chip/picker ('at 5' / 'in 2 hours'), and the confirm beat ('okay, i'll remember \ud83e\udd0d'). Keep it a single line, no list \u2014 reinforcing the 'one whisper, not a to-do system' rule visually, not just in prose."
+      },
+      {
+        "severity": "high",
+        "area": "Missing state \u2014 Hidden / peace-and-quiet & return",
+        "issue": "Hiding is referenced in three places (menu 'hide pat for now \u2325\u2318P' / 'bring pat back', the hide-hotkey settings row, and the 'brb \ud83d\udc3e' shy-wave delight note) but the HIDDEN state itself and the RETURN flow are never wireframed. There's no depiction of (a) the desktop while pat is hidden \u2014 is the tray glyph the only trace? does it change? \u2014 or (b) what 'bring pat back' looks like (does it walk back in? poof in? from where?). For a screen-share/focus use case this is a primary flow and currently it's told, not shown.",
+        "fix": "Add a tiny two-panel: 'hidden' (empty desktop, tray glyph still present, maybe dimmed/sleeping) \u2192 'return' (a short filmstrip: tray click \u2192 pat poofs/walks back to its resting spot with a happy stretch). Annotate that hiding is silent and consequence-free, and that the tray glyph is the only persistent trace (reinforces the 'no badges' promise)."
+      },
+      {
+        "severity": "medium",
+        "area": "Missing state/motion \u2014 Multi-monitor & Spaces",
+        "issue": "Section 06 has two settings toggles \u2014 'follow active Space' and 'show on all monitors' \u2014 but neither is illustrated. The doc never shows how pat behaves across multiple displays or when you switch Spaces (does it teleport? walk to the edge and reappear? which screen does it pick?). Multi-monitor was explicitly called out as a state to cover. Given that 'walk' is the star animation, an edge-of-screen / cross-monitor transition is a real motion moment that's currently undefined.",
+        "fix": "Add a short annotated beat (even a single desktop mock with two screens) showing the chosen behavior: e.g. on Space switch pat 'hops along' (a quick poof or trot to the edge), and on multi-monitor it stays on the active screen unless 'roam' is on. Define the edge case: what happens when pat is dragged to a screen edge or off-screen (does it walk back? clamp?). This also feeds Section 07's renderer contract."
+      },
+      {
+        "severity": "medium",
+        "area": "Missing state \u2014 Diary scrapbook / history",
+        "issue": "Section 03's menu offers 'flip back through our days' and describes it as 'a soft scrapbook of past pages \u2014 no calendar heatmap, no streak grid', and 'forget a day\u2026' \u2014 but neither the scrapbook browse view nor the forget-confirmation is wireframed. This is the one place the no-tracking promise is most at risk visually (a history of days could easily read like a log/calendar), so showing the intended cozy treatment \u2014 and showing that it ISN'T a grid \u2014 is exactly where a wireframe earns its keep. Currently it's a promise with no picture.",
+        "fix": "Add a small scrapbook wireframe: past diary pages as a horizontally swipeable stack of warm cards (not a calendar), each a sentence-led page, with a gentle 'forget this day' affordance and a soft confirm ('let it go? \ud83c\udf43'). Explicitly annotate the \ud83d\udeab-avoid (no heatmap, no streak dots) right on it."
+      },
+      {
+        "severity": "medium",
+        "area": "Missing state \u2014 Reduced motion / accessibility companion",
+        "issue": "The CSS includes a thoughtful prefers-reduced-motion block, but since 'animation IS the star,' the document never addresses what the PRODUCT does for a user who has reduced-motion enabled or who finds an always-moving desktop pet distracting. There's no 'calm mode' / 'less movement' wireframe or note. For a floating, always-on-top, always-animating companion this is a real first-class state (and an accessibility expectation on macOS), not an edge case.",
+        "fix": "Add a brief note or settings row: a 'calmer movements' / 'respect reduced motion' option that keeps pat present but minimizes idle antics and disables self-wander, and define what the signature beats degrade to (e.g. slow-blink still happens but no body vibration). Tie it to the existing motion-principles section so it reads as intentional, not an afterthought."
+      },
+      {
+        "severity": "medium",
+        "area": "Coherence \u2014 Section 07 register vs the rest",
+        "issue": "Section 07 (Architecture) is internally excellent but tonally is the one surface that reads like a different audience (engineers): 'four frozen contracts', 'signal bus', 'declarative table of states', 'debounced events'. That's appropriate for the layer it documents, but as part of a 'one document' it lands as a register cliff right after the soft helper surfaces. The kitten voice almost vanishes here except in flavor labels.",
+        "fix": "Keep the engineering content, but add a one-line bridging frame at the top of 07 in the warm voice (e.g. 'under pat's fur, four little parts that each do one job') and re-skin a couple of the coldest phrases. Alternatively, visually demote 07 as an 'appendix / under the hood' so the register shift is signposted rather than abrupt. Minor, but it's the seam most visible when reading end-to-end."
+      },
+      {
+        "severity": "low",
+        "area": "Voice \u2014 section headings inconsistent casing",
+        "issue": "Section H2 headings mix sentence/Title Case unpredictably: 'The desktop kitten \u2014 animation is the star' (cap T) vs 'Tend-me \u2014 gentle care, never a chore' (cap T) vs 'the daily recap ritual' (lowercase) vs 'little gentle helps, never a nag' (lowercase) vs 'First run & naming' (cap F) vs 'Menu-bar & settings' (cap M). The kitten's spoken copy is consistently lowercase, but the structural headings flip-flop, which slightly muddies whether headings 'belong' to the kitten's voice or the document's.",
+        "fix": "Pick one heading convention and apply it to all seven H2s. Recommend lowercase for H2 titles to lean into the kitten brand (it already happens in 02/03/04), OR keep H2s as neutral Title Case document chrome and reserve lowercase strictly for kitten dialogue. Either is fine \u2014 just be consistent across all 7."
+      },
+      {
+        "severity": "low",
+        "area": "Completeness \u2014 missing idle/behavior moments named elsewhere but not storyboarded",
+        "issue": "Section 07's streams promise a 'chase the cursor' clip and the prose mentions 'sometimes Pat chases the cursor a few steps then loses interest,' but cursor-chasing \u2014 one of the explicitly locked idle behaviors \u2014 has no filmstrip of its own (it's only a sentence inside the self-wander callout). Similarly, the 'wake from nap' beat exists, but the transition from one MOOD outfit to another (the app-switch dress-up) is only shown as a single end frame in 07's signal-flow, never as its own little change animation.",
+        "fix": "Add a short cursor-chase filmstrip (perk \u2192 pounce-toward-cursor a few steps \u2192 lose interest \u2192 sit) since it's a named signature idle behavior. Optionally add a 2\u20133 frame 'mood swap' beat (notices app change \u2192 quick playful prop-on, e.g. beret poofs on) so the dress-up moment \u2014 central to the whole moods system \u2014 has at least one motion depiction beyond the static mood chips."
+      },
+      {
+        "severity": "low",
+        "area": "Coherence \u2014 keyboard shortcut collision",
+        "issue": "\u2325T is assigned twice: in Section 02 the tray menu maps 'offer a treat' to \u2325T, and in Section 04c the ask-pat menu maps 'what time is it?' to \u2325T. Same modifier+key, two different actions across surfaces. A careful reader cross-referencing the menus will spot the conflict.",
+        "fix": "Reassign one of them. Suggest keeping \u2325T for 'treat' (matches the t-word) and giving the time a different key (e.g. \u2325? or none, since time-of-day is request-only and already in-menu). Audit the full shortcut set (\u2325P pat, \u2325N nap, \u2325R reminder, \u2318D diary, \u2325\u2318P hide, \u2318Q quit) for any other dupes while you're in there."
+      },
+      {
+        "severity": "low",
+        "area": "Completeness \u2014 first-run edge: skip / no-name path & permissions reality",
+        "issue": "Onboarding says naming is skippable ('it stays Pat') and there are no permission prompts \u2014 good \u2014 but two small gaps: (1) the skip path's downstream copy isn't shown (does the kitten ever say 'i'm Pat' to confirm the default?), and (2) the doc asserts 'no accessibility access prompt' yet reading the frontmost app on macOS can require Accessibility/Screen-Recording permission depending on API. The trust screen promises 'no permissions needed,' which may be aspirational rather than achievable. Worth a hidden note so the promise isn't quietly false.",
+        "fix": "Add a tiny confirm beat for the skip path ('okay, i'll be Pat \ud83d\udc3e'). And add an internal design note flagging that frontmost-app detection may need a permission on current macOS; if so, the onboarding promise wording should soften to the true minimum (e.g. 'the only thing i ever look at is which app is in front') rather than the absolute 'no permissions needed,' to keep the trust promise honest."
+      }
+    ]
+  }
+]
