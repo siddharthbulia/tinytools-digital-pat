@@ -3,6 +3,15 @@
     <channel>
         <title>Digital Pat</title>
         <item>
+            <title>2.8.4</title>
+            <description><![CDATA[Fix: a friend's pet could be missing from your desktop (stuck off-screen from an old window layout or a disconnected monitor) even though they showed in your friends list. Pets now always appear on a visible screen, and re-home themselves if your displays change.]]></description>
+            <pubDate>Wed, 17 Jun 2026 17:57:17 +0530</pubDate>
+            <sparkle:version>2.8.4</sparkle:version>
+            <sparkle:shortVersionString>2.8.4</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.4.dmg" length="6504150" type="application/octet-stream" sparkle:edSignature="jryNsPRfj8e4kAJUicsVqerAClhaXhI0QB9FUUi+Wkvuj/MYDbvDupbf7fax01qPgbs9uFfubjHUYPcjm96MCg=="/>
+        </item>
+        <item>
             <title>2.8.3</title>
             <description><![CDATA[Reliability fixes: your friends list always shows up now, and your pet's state (mood, character, online) keeps syncing to friends even after your Mac dozes or the connection blips — no more friends stuck looking like they're "napping."]]></description>
             <pubDate>Wed, 17 Jun 2026 15:49:39 +0530</pubDate>

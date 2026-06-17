@@ -127,7 +127,24 @@ final class PresencePetsController: ObservableObject {
     private var pets: [String: FriendPet] = [:]
 
     private func posKey(_ uid: String) -> String { "pat.deck.pos.\(uid)" }
-    private init() {}
+    private init() {
+        // A friend pet at a stale saved position (a now-disconnected monitor, an old layout) would be
+        // invisible while the friend still shows in the list — rescue any off-screen pet when the
+        // display arrangement changes.
+        NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
+                                               object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.rescueOffscreen() }
+        }
+    }
+
+    private func onScreen(_ rect: CGRect) -> Bool { NSScreen.screens.contains { $0.frame.intersects(rect) } }
+
+    private func rescueOffscreen() {
+        for (uid, pet) in pets where !onScreen(pet.frame) {
+            UserDefaults.standard.removeObject(forKey: posKey(uid))   // drop the bad saved position
+            placeDefault(uid)
+        }
+    }
 
     /// Reconcile the on-screen pets with the full friend list.
     func sync(_ list: [Friend]) {
@@ -159,14 +176,25 @@ final class PresencePetsController: ObservableObject {
     }
 
     private func layoutNew(_ uid: String) {
-        guard let pet = pets[uid], let vf = NSScreen.main?.visibleFrame else { return }
+        guard let pet = pets[uid] else { return }
+        // Use the saved position ONLY if it lands on a currently-visible screen (mirrors the own pet's
+        // visibleSomewhere guard). A stale/off-screen saved position would make the pet invisible while
+        // the friend still shows in the list — so fall through to the default and drop the bad value.
         if let s = UserDefaults.standard.string(forKey: posKey(uid)) {
             let p = s.split(separator: ",").compactMap { Double($0) }
             if p.count == 2 {
-                pet.place(at: CGPoint(x: p[0] - FriendPet.size.width / 2, y: p[1] - FriendPet.size.height / 2)); return
+                let origin = CGPoint(x: p[0] - FriendPet.size.width / 2, y: p[1] - FriendPet.size.height / 2)
+                if onScreen(CGRect(origin: origin, size: FriendPet.size)) { pet.place(at: origin); return }
+                UserDefaults.standard.removeObject(forKey: posKey(uid))   // stale → discard
             }
         }
-        let n = pets.count - 1                          // tidy default cascade from the top-right
+        placeDefault(uid)
+    }
+
+    /// Tidy default cascade from the top-right of the main screen (always on-screen).
+    private func placeDefault(_ uid: String) {
+        guard let pet = pets[uid], let vf = NSScreen.main?.visibleFrame else { return }
+        let n = max(0, pets.count - 1)
         pet.place(at: CGPoint(x: vf.maxX - 150 - FriendPet.size.width - CGFloat(n % 4) * 120,
                               y: vf.maxY - FriendPet.size.height - 8 - CGFloat(n / 4) * 104))
     }
