@@ -155,7 +155,7 @@ final class PetState: ObservableObject {
         let idle = currentIdleSeconds()
         // If a browser is frontmost, refine the mood from the active tab's domain.
         var base = frontMood
-        if BrowserMood.isBrowser(frontBundleId), let host = BrowserMood.activeHost(forBundleId: frontBundleId) {
+        if BrowserMood.isBrowser(frontBundleId), let host = browserHost(forceRefresh: announce) {
             base = BrowserMood.mood(forHost: host)
         }
         let newMood: Mood = idle >= idleThreshold ? .idle : base
@@ -183,6 +183,19 @@ final class PetState: ObservableObject {
         return CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: anyEvent)
     }
 
+    // The active-tab host (for browser mood) is fetched via a SYNCHRONOUS AppleScript that blocks the
+    // main thread (and pops a TCC prompt the first time). Cache it per browser and only re-query on an
+    // explicit app switch or every ~18s — instead of on every 5s tick — so the pet never visibly jitters.
+    private var cachedBrowserHost: (bundleId: String, host: String?, at: Date)?
+    private func browserHost(forceRefresh: Bool) -> String? {
+        guard let bid = frontBundleId else { return nil }
+        if !forceRefresh, let c = cachedBrowserHost, c.bundleId == bid,
+           Date().timeIntervalSince(c.at) < 18 { return c.host }
+        let host = BrowserMood.activeHost(forBundleId: bid)
+        cachedBrowserHost = (bid, host, Date())
+        return host
+    }
+
     // MARK: interactions
 
     func pat() {
@@ -190,8 +203,11 @@ final class PetState: ObservableObject {
         patPulse &+= 1
         showBubble(mood.patCaptions.randomElement() ?? "♡", seconds: 1.8)
         if let p = Sprites.named(characterId: character, "pat") { animator.play("purr", frames: [p], loop: true) }
+        // Tag this purr with the pat counter so a rapid second pat's purr isn't cut short by the FIRST
+        // pat's trailing timer (each pat extends the purr to its own +1.3s).
+        let pulse = patPulse
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { [weak self] in
-            guard let self, self.behavior == .purr else { return }
+            guard let self, self.behavior == .purr, self.patPulse == pulse else { return }
             self.behavior = .sit
             self.applyBase()
         }
@@ -205,6 +221,10 @@ final class PetState: ObservableObject {
     /// Enter the latching cling. Bumps the epoch so a stale clear can't release THIS activation, and
     /// teaches the exit contract in-world (the only way out is a pat).
     func enterChipkoo() {
+        // Idempotent: only a real neutral→chipkoo transition bumps the epoch. Re-picking Chipkoo while
+        // already clinging must NOT advance clingEpoch — the cursorMode didSet wouldn't fire (same value),
+        // so FriendStore.myClingEpoch would never learn the new epoch and friends could never release it.
+        guard cursorMode != .chipkoo else { return }
         clingEpoch += 1
         cursorMode = .chipkoo
         showBubble("hold tight! pat me to let go 🫶", seconds: 3.5)

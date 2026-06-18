@@ -47,7 +47,11 @@ final class CharacterGenerator: ObservableObject {
         guard let dir = try? makeDir(id),
               let baseImg = NSImage(data: baseRaw),
               let neutral = Pixelate.process(baseImg) else { error = "Couldn't process the image."; return nil }
-        try? neutral.write(to: dir.appendingPathComponent("neutral.png"))
+        // neutral.png is load-bearing (it's the palette + the existence check for the character). Do NOT
+        // swallow a failed write — otherwise we'd return a non-nil id, persist it as the active character,
+        // and the pet would silently render the cat fallback (wedged across relaunches).
+        do { try neutral.write(to: dir.appendingPathComponent("neutral.png")) }
+        catch { self.error = "Couldn't save the new character — check disk space and try again."; return nil }
 
         let pre = "Keep this EXACT chibi pixel character identical — same face, same hair/headwear, " +
                   "same FRONT-FACING forward pose, same proportions and pixel-art style, transparent background. Change ONLY: "
@@ -72,6 +76,10 @@ final class CharacterGenerator: ObservableObject {
             done += 1
         }
         progress = "done!"
+        Sprites.clear(characterId: id)   // drop any cached frames so the freshly-written PNGs are used
+        guard Characters.shared.dir(for: id) != nil else {   // belt-and-suspenders: never return a wedged id
+            error = "Couldn't save the new character."; return nil
+        }
         return id
     }
 

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Pat — Deep Bug Hunt &amp; Fixes (v2.8.5)</title>
+<style>
+  :root{--bg:#0f1117;--card:#171a23;--ink:#e7e9ee;--mut:#9aa3b2;--line:#262b38;--accent:#7c9cff;
+        --p2:#ffb454;--p3:#6fd3a3;--ok:#5ad19a;--bad:#ff6b6b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:40px 24px 80px}
+  h1{font-size:30px;margin:0 0 6px} h2{font-size:21px;margin:38px 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:16px;margin:24px 0 8px;color:var(--accent)}
+  .sub{color:var(--mut);margin:0 0 24px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .stat b{display:block;font-size:26px;line-height:1.1} .stat span{color:var(--mut);font-size:13px}
+  table{width:100%;border-collapse:collapse;margin:10px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#1c2030;color:#cdd3df;font-size:12px;letter-spacing:.03em;text-transform:uppercase}
+  tr:last-child td{border-bottom:none}
+  code{background:#0c0e14;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font:13px/1.5 "SF Mono",ui-monospace,Menlo,monospace;color:#cfe0ff}
+  .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+  .P2{background:rgba(255,180,84,.15);color:var(--p2);border:1px solid rgba(255,180,84,.4)}
+  .P3{background:rgba(111,211,163,.13);color:var(--p3);border:1px solid rgba(111,211,163,.35)}
+  .pill{display:inline-block;background:#10131c;border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--mut);font-size:12px;margin:2px 6px 2px 0}
+  .id{font:12px "SF Mono",ui-monospace,Menlo,monospace;color:var(--mut)}
+  a{color:var(--accent)}
+  .toc a{display:inline-block;margin:0 14px 6px 0}
+  .note{background:#141824;border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;color:var(--mut);margin:14px 0}
+  .file{color:#9fb4ff;font:12px "SF Mono",ui-monospace,Menlo,monospace}
+  ol.order{counter-reset:i;list-style:none;padding-left:0}
+  ol.order li{counter-increment:i;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px 10px 44px;margin:8px 0;position:relative}
+  ol.order li::before{content:counter(i);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0c0e14;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Digital Pat — Deep Bug Hunt &amp; Fixes</h1>
+  <p class="sub">Multi-agent adversarial audit of every subsystem · shipped as <b>v2.8.5</b> · 18 Jun 2026</p>
+
+  <div class="grid">
+    <div class="stat"><b>33</b><span>candidate findings</span></div>
+    <div class="stat"><b>21</b><span>confirmed real (after verify)</span></div>
+    <div class="stat"><b>10</b><span>false positives killed</span></div>
+    <div class="stat"><b>21</b><span>fixed &amp; shipped</span></div>
+  </div>
+
+  <div class="note">
+    <b>Method.</b> 7 reviewer agents read the real source in parallel (one per subsystem), each candidate
+    bug was then independently re-checked against the code by a skeptic agent (default-to-false), and the
+    survivors were de-duplicated and ranked. Severity: <span class="tag P2">9 × P2</span>
+    <span class="tag P3">12 × P3</span> — no P1/crash-on-happy-path. Every confirmed bug below is fixed in 2.8.5.
+  </div>
+
+  <p class="toc">
+    <a href="#backend">① Backend / AI-quota cluster</a>
+    <a href="#chipkoo">② Chipkoo &amp; presence</a>
+    <a href="#char">③ Characters &amp; sprites</a>
+    <a href="#roam">④ Roaming &amp; mood</a>
+    <a href="#ui">⑤ UI &amp; gestures</a>
+    <a href="#order">Fix order</a>
+    <a href="#gaps">Coverage gaps</a>
+  </p>
+
+  <h2 id="backend">① Backend — the AI-quota cluster (highest leverage)</h2>
+  <p class="sub">All four live in the same two files (<span class="file">supabase/schema.sql</span>,
+  <span class="file">functions/generate-image/index.ts</span>) and shipped together as one migration + redeploy.</p>
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Bug</th><th>Fix shipped</th></tr>
+    <tr><td class="id">brls-1</td><td><span class="tag P2">P2</span></td>
+      <td><b>Cross-user quota DoS.</b> <code>consume_generation</code> is <code>SECURITY DEFINER</code> but had no explicit grant, so it kept Postgres's default EXECUTE-to-PUBLIC. It takes a caller-supplied <code>p_uid</code> and never checks <code>auth.uid()</code>, so any anon client could POST <code>rpc('consume_generation',{p_uid:&lt;victim&gt;})</code> and drain a friend's daily image-generation cap.</td>
+      <td><code>REVOKE EXECUTE … FROM public, anon, authenticated</code> + <code>GRANT … TO service_role</code>. (Note: the suggested <code>current_user='service_role'</code> body-check is wrong for DEFINER functions — inside them <code>current_user</code> is the <i>owner</i> — so the grant is the real control.) Verified: anon now gets <b>401</b>.</td></tr>
+    <tr><td class="id">brls-2</td><td><span class="tag P2">P2</span></td>
+      <td><b>Cap bypass via TOCTOU.</b> The check was an unlocked <code>SELECT</code> then a separate increment — N parallel requests all read the same pre-increment count, all pass, all increment, blowing past the cap.</td>
+      <td>Collapsed into one atomic, row-locked <code>INSERT … ON CONFLICT … RETURNING</code> that reserves and returns the post-increment count; an over-cap reservation is refunded.</td></tr>
+    <tr><td class="id">SC-3</td><td><span class="tag P2">P2</span></td>
+      <td><b>Failed generations silently burned quota.</b> The counter was incremented <i>before</i> the OpenAI call and never refunded — a few transient 502s during one character (≈11–17 calls each) could eat a big slice of the 60/day cap. Also failed <i>open</i> when platform env was missing.</td>
+      <td>Reserve-then-refund: the edge function reserves before the call and calls a new <code>refund_generation</code> RPC on every failure path; missing-env now fails <b>closed</b>. Redeployed (verify-jwt on).</td></tr>
+    <tr><td class="id">brls-6</td><td><span class="tag P3">P3</span></td>
+      <td><b>A friend could vanish.</b> <code>my_friends()</code> INNER-joined <code>profiles</code>; a friendship whose counterpart profile row was transiently missing returned no row, so the client tore down that friend's presence channel.</td>
+      <td><code>LEFT JOIN</code> + <code>coalesce</code> defaults so a friendship always yields a friend; the live presence frame backfills the real name/character.</td></tr>
+  </table>
+
+  <h2 id="chipkoo">② Chipkoo &amp; presence (the multiplayer core)</h2>
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Bug</th><th>Fix shipped</th></tr>
+    <tr><td class="id">CHIPKOO-1</td><td><span class="tag P2">P2</span></td>
+      <td><b>Unreleasable clinging pet.</b> Re-picking the already-active <i>Chipkoo</i> menu item bumped <code>clingEpoch</code> but the <code>cursorMode</code> didSet didn't fire (same value), so the new epoch was never broadcast. A friend's pat (old epoch) could then never release the pet for the rest of the session.</td>
+      <td>Made <code>enterChipkoo()</code> idempotent (guard <code>cursorMode != .chipkoo</code>) and disabled the already-active cursor menu item.</td></tr>
+    <tr><td class="id">PS-1</td><td><span class="tag P2">P2</span></td>
+      <td><b>Reconnect race leaks presence callbacks.</b> Four reconnect triggers (sleep-wake, network, silent socket, manual) fired <code>resubscribeAll()</code> unserialized; on a lid-open/Wi-Fi flap two runs interleaved at every <code>await</code>, overwriting a live channel handle and double-firing <code>publish()</code>.</td>
+      <td>Reentrancy guard (single run at a time, coalesced re-run) + gated all triggers on a real <code>started</code> flag set only after the initial subscribe completes.</td></tr>
+    <tr><td class="id">PS-5</td><td><span class="tag P3">P3</span></td>
+      <td><b>Clinging pet lingered after quit.</b> The 45s heartbeat wasn't stopped on the quit path, so an in-flight tick could re-<code>track()</code> presence after <code>untrackAll()</code> — friends saw you online (and clinging) for up to 120s.</td>
+      <td>New <code>prepareForQuit()</code> stops the heartbeat first + latches a <code>quitting</code> flag that no-ops any further track.</td></tr>
+    <tr><td class="id">CHIPKOO-2</td><td><span class="tag P3">P3</span></td>
+      <td><b>Stale clear survived a restart.</b> A viewer's pending <code>clearReq</code> wasn't dropped when the owner left; since <code>clingEpoch</code> resets to 0 on relaunch, the stale request could release a brand-new cling that landed on the same epoch value.</td>
+      <td>Null <code>edgeClearReq.byFriend[owner]</code> in the presence-leave handler.</td></tr>
+  </table>
+
+  <h2 id="char">③ Characters &amp; sprites</h2>
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Bug</th><th>Fix shipped</th></tr>
+    <tr><td class="id">CS-1</td><td><span class="tag P2">P2</span></td>
+      <td><b>Stale art after regenerating a character.</b> The sprite cache was write-once and never invalidated; <code>clearCache()</code> was dead code. Regenerating an existing character kept drawing the old sprites until relaunch.</td>
+      <td>Added <code>Sprites.clear(characterId:)</code>, called after generation; <code>finishAddCharacter</code> now force-re-renders when the active character is regenerated.</td></tr>
+    <tr><td class="id">CS-2</td><td><span class="tag P2">P2</span></td>
+      <td><b>Wedged to cat fallback.</b> A failed <code>neutral.png</code> write was swallowed by <code>try?</code>; the character was still selected &amp; persisted, but rendered the bundled cat — across relaunches, with no recovery.</td>
+      <td>Stop swallowing the load-bearing write; validate the character dir exists before returning/persisting the id.</td></tr>
+    <tr><td class="id">CS-3</td><td><span class="tag P3">P3</span></td>
+      <td><b>Repeated disk probes.</b> Missing optional frames (per-mood blinks) were never negatively cached, so every blink tick re-ran FileManager + a failing image load forever.</td>
+      <td>Cache misses too (<code>[String: NSImage?]</code>) so each absent frame is probed at most once.</td></tr>
+  </table>
+
+  <h2 id="roam">④ Roaming &amp; mood</h2>
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Bug</th><th>Fix shipped</th></tr>
+    <tr><td class="id">MR-2</td><td><span class="tag P2">P2</span></td>
+      <td><b>Pet stranded at a 22px sliver.</b> An off-screen "peek" persisted the sliver origin; if roaming was toggled off mid-peek the pet was left at the edge and relaunched there.</td>
+      <td><code>saveOrigin</code> now refuses off-screen positions (center-on-screen), <code>setCalm</code> rescues a stranded pet to the nearest corner, and <code>visibleSomewhere</code> is center-based so a saved sliver re-anchors.</td></tr>
+    <tr><td class="id">MR-3</td><td><span class="tag P2">P2</span></td>
+      <td><b>Pet freezes near a browser.</b> A synchronous AppleScript ran on the main thread every 5s (and on every app switch) to read the active tab — a slow/unresponsive browser froze all pet motion, and the first call popped a blocking permission prompt.</td>
+      <td>Cache the tab host per browser and only re-query on an explicit app switch or every ~18s instead of every tick.</td></tr>
+    <tr><td class="id">MR-5</td><td><span class="tag P3">P3</span></td>
+      <td><b>Double-pat cut the purr short.</b> Each pat scheduled an un-cancelled timer; a second pat within 1.3s let the first timer end the purr early.</td>
+      <td>Tag the purr with the pat counter; only the latest pat's timer ends it.</td></tr>
+    <tr><td class="id">MR-4</td><td><span class="tag P3">P3</span></td>
+      <td><b>Orphaned animation timer per removed friend.</b> Unfriending didn't stop the friend pet's Animator timer (latent leak; would be a 60Hz leak for any future looping clip).</td>
+      <td><code>FriendPet.close()</code> stops the animator + added <code>Animator deinit</code>.</td></tr>
+    <tr><td class="id">MR-1</td><td><span class="tag P3">P3</span></td>
+      <td><b>Crash on a tiny display.</b> <code>wander()</code> sampled <code>CGFloat.random(in:)</code> on a range that reverses on a very small/headless screen → fatal trap.</td>
+      <td>Guard the bounds before sampling; skip the tick if the screen is too small.</td></tr>
+  </table>
+
+  <h2 id="ui">⑤ UI &amp; gestures</h2>
+  <table>
+    <tr><th>ID</th><th>Severity</th><th>Bug</th><th>Fix shipped</th></tr>
+    <tr><td class="id">appkit-ui-5</td><td><span class="tag P3">P3</span></td>
+      <td><b>Flick-taps swallowed.</b> A tap with &gt;5px of trackpad drift was classified as a drag — no purr/hearts, and a Chipkoo cling couldn't be released.</td>
+      <td>Added a press-duration gate: a brief, low-travel contact registers as a pat (threshold raised to 10px).</td></tr>
+    <tr><td class="id">appkit-ui-6</td><td><span class="tag P3">P3</span></td>
+      <td><b>Rapid patting wiped new hearts.</b> Each pat scheduled an un-cancelled hearts-clear; an earlier clear emptied hearts a later pat just added.</td>
+      <td>Generation-token the clear so only the latest pat's timer clears.</td></tr>
+    <tr><td class="id">appkit-ui-7</td><td><span class="tag P3">P3</span></td>
+      <td><b>Fragile relaunch after Reset.</b> Relaunch built a shell string with the bundle path double-quoted; a path with a quote/backslash would break it, leaving no running pet.</td>
+      <td>Launch <code>/usr/bin/open -n</code> directly via <code>Process</code> with an argument array — no shell.</td></tr>
+    <tr><td class="id">appkit-ui-8</td><td><span class="tag P3">P3</span></td>
+      <td><b>Silent onboarding dead-end.</b> If anonymous sign-in failed (offline first run), "Let's go" just re-enabled with zero feedback.</td>
+      <td><code>start()</code> now returns success; onboarding shows a "couldn't connect" error.</td></tr>
+  </table>
+
+  <h2 id="order">Fix order shipped</h2>
+  <ol class="order">
+    <li><b>brls-1</b> — revoke the quota RPC from clients (security; prerequisite for trusting the cap).</li>
+    <li><b>brls-2</b> — make the cap atomic (same migration).</li>
+    <li><b>SC-3</b> — reserve-then-refund so failures don't burn quota; fail closed.</li>
+    <li><b>CHIPKOO-1</b> — idempotent <code>enterChipkoo</code> (user-visible multiplayer breakage).</li>
+    <li><b>CS-1 / CS-2</b> — sprite-cache eviction + don't persist a wedged character.</li>
+    <li><b>PS-1</b> — serialize the reconnect paths.</li>
+    <li><b>MR-3 / MR-2</b> — kill the browser-query freeze; stop the stranded-pet.</li>
+    <li><b>PS-5 / CHIPKOO-2 / brls-6</b> — presence-on-quit, stale clear, vanishing friend.</li>
+    <li>Remaining P3 polish — gestures, hearts, purr, relaunch, onboarding, timers, wander guard, negative cache.</li>
+  </ol>
+
+  <h2 id="gaps">Coverage gaps (not audited this pass)</h2>
+  <div class="note">
+    <span class="pill">Poke / send_poke flow (RLS, self-poke, spam)</span>
+    <span class="pill">Room / invite reuse &amp; expiry</span>
+    <span class="pill">delete_my_account cascade completeness</span>
+    <span class="pill">Sparkle update path (signature, rollback)</span>
+    <span class="pill">Add-character UI: cancel mid-gen, concurrent generates</span>
+    <span class="pill">activation-policy / Dock-icon transitions</span>
+    <span class="pill">No runtime/build verification of every path (static reading)</span>
+  </div>
+
+  <p class="sub" style="margin-top:30px">All 21 confirmed bugs fixed, compiled, signed, notarized, and shipped as
+  <b>2.8.5</b> → <a href="https://digital-pat.vercel.app">digital-pat.vercel.app</a>. Auto-update delivers it to existing installs.</p>
+</div>
+</body>
+</html>

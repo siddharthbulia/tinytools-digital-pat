@@ -14,6 +14,7 @@ struct OnboardingView: View {
     @State private var name = ""
     @State private var character = Characters.shared.currentId
     @State private var busy = false
+    @State private var errorText: String?
     private var ids: [String] { Characters.shared.availableIds() }
     private var canStart: Bool { !busy && !name.trimmingCharacters(in: .whitespaces).isEmpty }
 
@@ -33,6 +34,10 @@ struct OnboardingView: View {
                 }.padding(.vertical, 2)
             }.frame(height: 80)
 
+            if let errorText {
+                Text(errorText).font(.caption).foregroundColor(.red).fixedSize(horizontal: false, vertical: true)
+            }
+
             HStack {
                 Spacer()
                 Button(busy ? "…" : "Let's go 🎉") { start() }
@@ -43,10 +48,14 @@ struct OnboardingView: View {
     }
 
     private func start() {
-        busy = true
+        busy = true; errorText = nil
         let nm = name.trimmingCharacters(in: .whitespaces)
         Characters.shared.setCurrent(character)
-        Task { await FriendStore.shared.start(name: nm, character: character); busy = false }
+        Task {
+            let ok = await FriendStore.shared.start(name: nm, character: character)
+            busy = false
+            if !ok { errorText = "Couldn't connect — check your internet and try again." }
+        }
     }
 }
 

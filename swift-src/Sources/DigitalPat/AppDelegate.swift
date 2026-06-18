@@ -176,7 +176,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         for m in CursorMode.allCases {
             let it = NSMenuItem(title: m.label, action: #selector(menuPickCursorMode(_:)), keyEquivalent: "")
             it.representedObject = m.rawValue
-            it.state = (m == state.cursorMode) ? .on : .off
+            let active = (m == state.cursorMode)
+            it.state = active ? .on : .off
+            it.isEnabled = !active   // re-picking the active mode is a no-op (and re-picking Chipkoo would desync the cling epoch)
             it.target = self
             cursorMenu.addItem(it)
         }
@@ -282,7 +284,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func finishAddCharacter(_ id: String) {
-        Characters.shared.setCurrent(id)   // → posts .patCharacterChanged → characterChanged()
+        // setCurrent posts .patCharacterChanged only on a real id CHANGE; when REGENERATING the
+        // already-active character the id is unchanged, so force a re-render to pick up the fresh sprites.
+        let changed = Characters.shared.currentId != id
+        Characters.shared.setCurrent(id)
+        if !changed { state.refreshCharacter() }
         closeAddCharacter()
     }
 
@@ -332,14 +338,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
     }
 
-    /// Quit and reopen a fresh instance (used after a reset). The detached `open` waits for us to exit
-    /// so the single-instance guard lets the new copy through.
+    /// Quit and reopen a fresh instance (used after a reset). Launch `open -n` directly (no shell), so a
+    /// bundle path containing a quote/space/backslash can't break the relaunch. `open -n` forces a new
+    /// instance; a brief delay lets us exit first so the single-instance guard lets the new copy through.
     private func relaunchApp() {
-        let path = Bundle.main.bundlePath
-        let task = Process()
-        task.launchPath = "/bin/sh"
-        task.arguments = ["-c", "sleep 1; /usr/bin/open \"\(path)\""]
-        try? task.run()
+        let url = Bundle.main.bundleURL
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+            let task = Process()
+            task.launchPath = "/usr/bin/open"
+            task.arguments = ["-n", url.path]
+            try? task.run()
+        }
         NSApp.terminate(nil)
     }
 
@@ -433,8 +442,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func visibleSomewhere(origin: NSPoint, size: NSSize) -> Bool {
-        let rect = NSRect(origin: origin, size: size)
-        return NSScreen.screens.contains { $0.frame.intersects(rect) }
+        // Require the pet's CENTER to be on a visible screen — a bare frame.intersects would treat a
+        // saved off-screen sliver (e.g. from an interrupted peek) as "visible" and restore it pinned to
+        // the edge. Center-on-screen re-anchors such a sliver to the default top-right instead.
+        let center = NSPoint(x: origin.x + size.width / 2, y: origin.y + size.height / 2)
+        return NSScreen.screens.contains { $0.visibleFrame.contains(center) }
     }
 
     /// Smooth drag: position the window from the GLOBAL mouse location and a fixed
@@ -471,7 +483,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         var replied = false
         let reply = { if !replied { replied = true; NSApp.reply(toApplicationShouldTerminate: true) } }
-        Task { @MainActor in await FriendStore.shared.untrackAll(); reply() }
+        Task { @MainActor in await FriendStore.shared.prepareForQuit(); reply() }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { reply() }
         return .terminateLater
     }

@@ -8,6 +8,9 @@
 // DAILY cap via the consume_generation() RPC — this is what actually protects the
 // OpenAI card (the embedded shared secret is extractable and only deters casual abuse).
 //
+// Quota is RESERVED before the OpenAI call (atomic, so parallel requests can't exceed the
+// cap) and REFUNDED on any failure, so a flaky upstream never silently burns a user's cap.
+//
 // Secrets:
 //   OPENAI_API_KEY    — the OpenAI key
 //   PAT_SHARED_SECRET — optional shared token (x-pat-secret), defense in depth
@@ -44,18 +47,37 @@ function uidFromJWT(auth: string | null): string | null {
   }
 }
 
-// Atomically check+increment the caller's daily generation count via the service role.
-async function withinDailyCap(uid: string, cap: number): Promise<boolean> {
+function serviceEnv(): { url: string; svc: string } | null {
   const url = Deno.env.get("SUPABASE_URL");
   const svc = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !svc) return true; // fail open only if platform env missing (shouldn't happen)
-  const r = await fetch(`${url}/rest/v1/rpc/consume_generation`, {
+  return url && svc ? { url, svc } : null;
+}
+
+// Atomically RESERVE one of the caller's daily generations via the service role. Returns false when
+// over the cap — or when the platform env is missing (FAIL CLOSED: never lose the only cost guard).
+async function reserveGeneration(uid: string, cap: number): Promise<boolean> {
+  const env = serviceEnv();
+  if (!env) return false;
+  const r = await fetch(`${env.url}/rest/v1/rpc/consume_generation`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", apikey: svc, Authorization: `Bearer ${svc}` },
+    headers: { "Content-Type": "application/json", apikey: env.svc, Authorization: `Bearer ${env.svc}` },
     body: JSON.stringify({ p_uid: uid, p_cap: cap }),
   });
   if (!r.ok) return false;
   return (await r.json()) === true;
+}
+
+// Give a reserved generation back (best-effort) when the OpenAI call doesn't produce an image.
+async function refundGeneration(uid: string): Promise<void> {
+  const env = serviceEnv();
+  if (!env) return;
+  try {
+    await fetch(`${env.url}/rest/v1/rpc/refund_generation`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: env.svc, Authorization: `Bearer ${env.svc}` },
+      body: JSON.stringify({ p_uid: uid }),
+    });
+  } catch { /* best-effort; over-count self-resets at midnight */ }
 }
 
 Deno.serve(async (req) => {
@@ -67,16 +89,17 @@ Deno.serve(async (req) => {
     return json({ error: "unauthorized" }, 401);
   }
 
-  // identify the user from the (platform-verified) JWT and enforce the daily cap
+  // identify the user from the (platform-verified) JWT and RESERVE a daily generation
   const uid = uidFromJWT(req.headers.get("Authorization"));
   if (!uid) return json({ error: "sign-in required" }, 401);
   const cap = parseInt(Deno.env.get("PAT_DAILY_GEN_CAP") ?? "60", 10);
-  if (!(await withinDailyCap(uid, cap))) {
+  if (!(await reserveGeneration(uid, cap))) {
     return json({ error: "daily generation limit reached — try again tomorrow" }, 429);
   }
+  // From here on, a reservation is held — refund it on EVERY non-success path.
 
   const key = Deno.env.get("OPENAI_API_KEY");
-  if (!key) return json({ error: "server missing OPENAI_API_KEY" }, 500);
+  if (!key) { await refundGeneration(uid); return json({ error: "server missing OPENAI_API_KEY" }, 500); }
 
   let payload: {
     image?: string; prompt?: string;
@@ -85,15 +108,20 @@ Deno.serve(async (req) => {
   try {
     payload = await req.json();
   } catch {
+    await refundGeneration(uid);
     return json({ error: "invalid JSON body" }, 400);
   }
   const { image, prompt } = payload;
-  if (!image || !prompt) return json({ error: "image (base64) and prompt are required" }, 400);
+  if (!image || !prompt) {
+    await refundGeneration(uid);
+    return json({ error: "image (base64) and prompt are required" }, 400);
+  }
 
   let bytes: Uint8Array;
   try {
     bytes = Uint8Array.from(atob(image), (c) => c.charCodeAt(0));
   } catch {
+    await refundGeneration(uid);
     return json({ error: "image must be base64-encoded PNG" }, 400);
   }
 
@@ -119,10 +147,11 @@ Deno.serve(async (req) => {
       if (!r.ok) { lastErr = JSON.stringify(data?.error ?? data).slice(0, 300); continue; }
       const b64 = data?.data?.[0]?.b64_json;
       if (!b64) { lastErr = "no image in response"; continue; }
-      return json({ b64_json: b64 });
+      return json({ b64_json: b64 });   // success: keep the reservation
     } catch (e) {
       lastErr = String(e);
     }
   }
+  await refundGeneration(uid);   // all attempts failed → don't charge the user
   return json({ error: `openai failed: ${lastErr}` }, 502);
 });

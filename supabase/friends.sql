@@ -61,14 +61,18 @@ begin
   return v_inv.inviter;
 end $$;
 
--- my friends with their profile (uid + name + character)
+-- my friends with their profile (uid + name + character). LEFT JOIN + coalesce so a friendship whose
+-- counterpart profile row is (transiently) missing still yields a friend row — an INNER JOIN would drop
+-- them and refreshFriends() would tear down their presence channel until the other side relaunches.
+-- PresencePets backfills the real name/character from the live presence frame once they're online.
 create or replace function public.my_friends()
 returns table(uid uuid, name text, active_character text)
 language sql security definer stable set search_path=public as $$
-  select p.uid, p.name, p.active_character
-  from public.friendships f
-  join public.profiles p on p.uid = case when f.a_uid = auth.uid() then f.b_uid else f.a_uid end
-  where f.a_uid = auth.uid() or f.b_uid = auth.uid();
+  select e.f_uid as uid, coalesce(p.name, 'friend') as name, coalesce(p.active_character, 'cat') as active_character
+  from (select case when f.a_uid = auth.uid() then f.b_uid else f.a_uid end as f_uid
+        from public.friendships f
+        where f.a_uid = auth.uid() or f.b_uid = auth.uid()) e
+  left join public.profiles p on p.uid = e.f_uid;
 $$;
 
 -- remove a friend (both directions, since the row is canonical)
@@ -98,6 +102,12 @@ create policy profiles_read on public.profiles for select to authenticated
 
 -- realtime: broadcast friendship inserts/deletes so the OTHER party syncs live (no restart).
 -- replica identity full → DELETE payloads carry both uids so the unfriend reaches both sides.
+-- KNOWN LIMITATION (brls-3): Realtime applies RLS to INSERT/UPDATE but NOT to DELETE, so every unfriend's
+-- old record (a_uid + b_uid) is broadcast to ALL subscribers of this table. The client guards by payload
+-- (FriendStore only acts when a party is ME), but that's an after-the-fact filter, not a confidentiality
+-- control — any subscriber sees the global who-unfriended-whom stream. Impact is low (anonymous-auth
+-- UUIDs only, no PII, unfriend events only). A proper fix routes removals via a per-party private
+-- Broadcast (not RLS-bound to a table) instead of postgres_changes; deferred until the impact warrants it.
 do $$ begin
   alter publication supabase_realtime add table public.friendships;
 exception when duplicate_object then null; end $$;

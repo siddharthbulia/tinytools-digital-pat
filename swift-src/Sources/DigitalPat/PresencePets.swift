@@ -99,7 +99,7 @@ final class FriendPet {
 
     func place(at origin: CGPoint) { panel.setFrameOrigin(origin) }
     var frame: CGRect { panel.frame }
-    func close() { reactor?.stop(); panel.orderOut(nil) }
+    func close() { reactor?.stop(); state.animator.stop(); panel.orderOut(nil) }
 
     /// Drag by ABSOLUTE cursor position (like my own pet) — NOT the gesture's relative
     /// translation. Translating while moving the window the gesture is measured against is a

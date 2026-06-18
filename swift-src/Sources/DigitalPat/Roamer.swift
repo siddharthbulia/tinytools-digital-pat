@@ -43,7 +43,25 @@ final class Roamer {
 
     func setCalm(_ on: Bool) {
         calmMode = on
-        if on { cancelGlide(); peekTimer?.invalidate(); state.setGaze(0) }
+        if on {
+            cancelGlide(); peekTimer?.invalidate(); state.setGaze(0)
+            rescueIfStranded()   // turning roaming off mid-peek must not leave Pat parked off-screen
+        }
+    }
+
+    /// If the pet is stranded off-screen (e.g. an off-screen peek interrupted before gliding back),
+    /// snap it to the nearest fully-visible corner so it can't be lost.
+    private func rescueIfStranded() {
+        guard let panel, let f = vf(), !centerOnScreen(panel.frame) else { return }
+        let cur = panel.frame.origin
+        if let target = corners(panel.frame.size, f).min(by: { dist($0, cur) < dist($1, cur) }) {
+            panel.setFrameOrigin(target); saveOrigin()
+        }
+    }
+
+    private func centerOnScreen(_ frame: NSRect) -> Bool {
+        let c = NSPoint(x: frame.midX, y: frame.midY)
+        return NSScreen.screens.contains { $0.visibleFrame.contains(c) }
     }
 
     // MARK: - Glide Engine (eased, 60fps, fully cancellable)
@@ -120,8 +138,13 @@ final class Roamer {
         let size = panel.frame.size
         let cur = panel.frame.origin
         let inset: CGFloat = 30
-        let x = CGFloat.random(in: (f.minX + inset)...(f.maxX - size.width - inset))
-        let y = CGFloat.random(in: (f.minY + inset)...(f.maxY - size.height - inset))
+        // Guard the ranges: on a tiny/headless display the lower bound can exceed the upper bound, and
+        // CGFloat.random(in:) fatal-traps on a reversed range. Skip this tick (roaming resumes next).
+        let loX = f.minX + inset, hiX = f.maxX - size.width - inset
+        let loY = f.minY + inset, hiY = f.maxY - size.height - inset
+        guard hiX > loX, hiY > loY else { return }
+        let x = CGFloat.random(in: loX...hiX)
+        let y = CGFloat.random(in: loY...hiY)
         let target = NSPoint(x: x, y: y)
         glide(to: target, duration: glideDuration(cur, target),
               lean: target.x < cur.x ? -0.4 : 0.4) { [weak self] in self?.state.settle() }
@@ -199,7 +222,9 @@ final class Roamer {
     }
 
     private func saveOrigin() {
-        guard let panel else { return }
+        // Never persist a transient OFF-SCREEN origin (e.g. mid off-screen-peek): the pet's center must
+        // be on a visible screen, or a relaunch would restore it pinned to the edge / off-screen.
+        guard let panel, centerOnScreen(panel.frame) else { return }
         UserDefaults.standard.set(NSStringFromPoint(panel.frame.origin), forKey: "digitalpat.petOrigin")
     }
 }

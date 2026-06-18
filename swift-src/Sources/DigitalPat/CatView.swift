@@ -33,7 +33,9 @@ struct CatView: View {
     @State private var breathe = false
     @State private var bounce = false
     @State private var hearts: [Heart] = []
+    @State private var heartsGen = 0
     @State private var didDrag = false
+    @State private var pressStart: Date?
     // per-mood hover reaction transforms
     @State private var hovering = false
     @State private var reactRot: Double = 0
@@ -70,13 +72,18 @@ struct CatView: View {
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { v in
+                    if pressStart == nil { pressStart = Date() }
                     let moved = abs(v.translation.width) + abs(v.translation.height)
-                    if !didDrag && moved > 5 { didDrag = true }
+                    if !didDrag && moved > 10 { didDrag = true }
                     if didDrag { onDragChanged(v.translation) }   // keep following once grabbed
                 }
-                .onEnded { _ in
-                    if didDrag { onDragEnded() } else { onPat() }
-                    didDrag = false
+                .onEnded { v in
+                    let moved = abs(v.translation.width) + abs(v.translation.height)
+                    let quick = (pressStart.map { Date().timeIntervalSince($0) } ?? 1) < 0.2
+                    // A brief contact that drifted only a little is a PAT, not a drag — otherwise a
+                    // trackpad flick swallows the pat (no purr/hearts, and a Chipkoo cling never releases).
+                    if didDrag && !(quick && moved < 24) { onDragEnded() } else { onPat() }
+                    didDrag = false; pressStart = nil
                 }
         )
         .onHover { inside in
@@ -130,8 +137,10 @@ struct CatView: View {
             Heart(dx: CGFloat(i) * 13 - 20 + CGFloat.random(in: -4...4),
                   scale: CGFloat.random(in: 0.8...1.3))
         }
+        heartsGen &+= 1
+        let gen = heartsGen   // only the LATEST pat's timer clears the hearts (rapid pats don't wipe new ones early)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) { bounce = false }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.05) { hearts = [] }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.05) { if heartsGen == gen { hearts = [] } }
     }
 
     private func firePerk() {

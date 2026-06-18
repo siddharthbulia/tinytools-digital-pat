@@ -71,7 +71,10 @@ final class FriendStore: ObservableObject {
     private var netSatisfied = true
     private var rtStatusSub: RealtimeSubscription?                       // self-heal after a SILENT socket drop
     private var rtWasDown = false                                        // saw a disconnect since arming
-    private var rtArmed = false                                          // ignore the initial connect
+    private var started = false                                          // start()'s initial subscribe finished
+    private var resubscribing = false                                   // serialize the reconnect paths
+    private var resubPending = false                                    // a reconnect arrived mid-resubscribe
+    private var quitting = false                                        // stop re-advertising presence on quit
 
     private var myUID: String?
     private var myName = UserDefaults.standard.string(forKey: "pat.me.name") ?? "friend"
@@ -98,7 +101,7 @@ final class FriendStore: ObservableObject {
                 guard let self else { return }
                 let recovered = satisfied && !self.netSatisfied
                 self.netSatisfied = satisfied
-                if recovered, self.ready { await self.resubscribeAll() }
+                if recovered, self.started { await self.resubscribeAll() }
             }
         }
         netMonitor.start(queue: DispatchQueue(label: "ai.bulia.pat.net"))
@@ -114,7 +117,7 @@ final class FriendStore: ObservableObject {
     }
 
     private func handleRealtimeStatus(_ status: RealtimeClientStatus) {
-        guard rtArmed else { return }   // ignore the initial connect during start()
+        guard started else { return }   // ignore the initial connect during start()
         switch status {
         case .disconnected: rtWasDown = true
         case .connected:
@@ -129,9 +132,10 @@ final class FriendStore: ObservableObject {
 
     // MARK: lifecycle
 
-    func start(name: String, character: String) async {
+    @discardableResult
+    func start(name: String, character: String) async -> Bool {
         myName = name; myCharacter = character
-        guard let uid = await SupabaseService.shared.ensureSession() else { return }  // don't onboard if sign-in fails
+        guard let uid = await SupabaseService.shared.ensureSession() else { return false }  // sign-in failed → report it
         myUID = uid
         UserDefaults.standard.set(name, forKey: "pat.me.name")   // mark onboarded only after a real session
         _ = try? await client.from("profiles")
@@ -140,7 +144,8 @@ final class FriendStore: ObservableObject {
         await refreshFriends()
         await subscribeFriendGraph()   // live-add/remove → no restart needed on either side
         startHeartbeat()
-        rtArmed = true                 // now react to realtime reconnects (not the initial connect)
+        started = true                 // initial subscribe done → now react to wake/network/socket reconnects
+        return true
     }
 
     private struct FriendRow: Decodable { let uid: String; let name: String; let active_character: String }
@@ -185,6 +190,10 @@ final class FriendStore: ObservableObject {
                 // leaves before joins (a re-track is leave(old)+join(new)).
                 if leaves.contains(where: { $0.uid.lowercased() != myUidLower }) {
                     self.live[friend] = nil; self.lastSeen[friend] = nil
+                    // Drop any pending clear request directed at this owner: their clingEpoch counter
+                    // resets on relaunch, so a surviving clearReq could match a brand-new activation and
+                    // release a fresh cling it never asked for.
+                    self.edgeClearReq.byFriend[friend] = nil
                 }
                 if let theirs = joins.last(where: { $0.uid.lowercased() != myUidLower }) {
                     self.live[friend] = theirs
@@ -249,7 +258,7 @@ final class FriendStore: ObservableObject {
     /// `friend` selects the per-channel clearReq (a viewer-side request targets exactly one owner);
     /// the cling epoch + scope are about MY pet so they're identical on every channel.
     private func track(on ch: RealtimeChannelV2, friend: String) async {
-        guard let uid = myUID else { return }
+        guard let uid = myUID, !quitting else { return }   // don't re-advertise presence once we're quitting
         try? await ch.track(PresencePayload(uid: uid, name: myName, character: myCharacter,
                                             mood: myMood, lastActive: Date().timeIntervalSince1970,
                                             cursorMode: myCursorMode, clingEpoch: myClingEpoch,
@@ -290,15 +299,24 @@ final class FriendStore: ObservableObject {
     }
 
     @objc private func didWake() {
-        guard ready, myUID != nil else { return }
+        guard started, myUID != nil else { return }
         Task { await resubscribeAll() }
     }
 
     /// Tear down every presence channel + the graph watcher and re-establish them from scratch, then
-    /// reconcile the friend list. Invoked on wake-from-sleep AND on network recovery — both kill the
-    /// Realtime socket, and a clean re-subscribe + re-track is the reliable way to get presence flowing
-    /// again (so an online friend stops looking like they're "napping").
+    /// reconcile the friend list. Invoked on wake-from-sleep, network recovery, AND silent socket
+    /// reconnect — all kill the Realtime socket, and a clean re-subscribe + re-track is the reliable way
+    /// to get presence flowing again (so an online friend stops looking like they're "napping").
+    /// SERIALIZED: these triggers commonly coincide on a lid-open/Wi-Fi flap; without this, two
+    /// interleaving runs would tear down + re-subscribe the same channel concurrently and leak a
+    /// presence callback (the older handle gets overwritten while still registered → double publish()).
     private func resubscribeAll() async {
+        if resubscribing { resubPending = true; return }
+        resubscribing = true
+        defer {
+            resubscribing = false
+            if resubPending { resubPending = false; Task { await resubscribeAll() } }
+        }
         guard let uid = myUID else { return }
         let fuids = Array(channels.keys)
         for f in fuids {
@@ -351,6 +369,15 @@ final class FriendStore: ObservableObject {
     /// Best-effort: drop presence on every channel so an owner who quits while clinging un-clings on
     /// friends' desktops immediately (instead of after the 120s staleness fallback).
     func untrackAll() async { for ch in channels.values { await ch.untrack() } }
+
+    /// Quit path (applicationShouldTerminate): stop the heartbeat FIRST and latch `quitting` so an
+    /// in-flight heartbeat tick can't re-track presence AFTER we untrack (which would re-advertise us as
+    /// present and leave a clinging pet on friends' desktops until the 120s staleness fallback).
+    func prepareForQuit() async {
+        quitting = true
+        heartbeat?.invalidate(); heartbeat = nil
+        await untrackAll()
+    }
 
     func setCharacter(_ id: String) {
         guard myCharacter != id else { return }

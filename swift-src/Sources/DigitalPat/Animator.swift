@@ -67,4 +67,5 @@ final class Animator: ObservableObject {
     }
 
     func stop() { timer?.invalidate(); timer = nil }
+    deinit { timer?.invalidate() }   // a looping clip's timer is retained by the run loop; tear it down
 }

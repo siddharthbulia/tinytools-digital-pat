@@ -143,19 +143,41 @@ create policy blocks_all on public.blocks for all to authenticated using (uid = 
 drop policy if exists usage_read on public.usage_counters;
 create policy usage_read on public.usage_counters for select to authenticated using (uid = auth.uid());
 
--- consume_generation: the generate-image Edge Function calls this (as the service role) to
--- check + increment a user's daily generation count atomically; returns false when over the cap.
+-- consume_generation: the generate-image Edge Function calls this (AS THE SERVICE ROLE) to atomically
+-- RESERVE one of a user's daily generations; returns false when over the cap. The upsert holds the row
+-- lock and RETURNING gives the post-increment count, so concurrent callers serialize (no read-then-write
+-- TOCTOU that lets parallel requests blow past the cap). An over-cap reservation is refunded immediately.
 create or replace function public.consume_generation(p_uid uuid, p_cap int)
 returns boolean language plpgsql security definer set search_path=public as $$
 declare v_count int;
 begin
-  select generations into v_count from public.usage_counters where uid = p_uid and day = current_date;
-  if v_count is null then v_count := 0; end if;
-  if v_count >= p_cap then return false; end if;
   insert into public.usage_counters(uid, day, generations) values (p_uid, current_date, 1)
-    on conflict (uid, day) do update set generations = public.usage_counters.generations + 1;
+    on conflict (uid, day) do update set generations = public.usage_counters.generations + 1
+    returning generations into v_count;
+  if v_count > p_cap then
+    update public.usage_counters set generations = generations - 1 where uid = p_uid and day = current_date;
+    return false;
+  end if;
   return true;
 end $$;
+
+-- refund_generation: undo a reservation when the OpenAI call fails, so a flaky upstream never burns the
+-- user's daily cap (the edge function calls this on every error path).
+create or replace function public.refund_generation(p_uid uuid)
+returns void language plpgsql security definer set search_path=public as $$
+begin
+  update public.usage_counters set generations = greatest(generations - 1, 0)
+    where uid = p_uid and day = current_date;
+end $$;
+
+-- These two are SERVICE-ROLE-ONLY. A SECURITY DEFINER function defaults to EXECUTE-by-PUBLIC, which would
+-- let any anon client POST rpc('consume_generation',{p_uid:<victim>,…}) and drain a victim's daily quota —
+-- so revoke from clients and grant only to service_role. (Do NOT add a current_user='service_role' check:
+-- inside a DEFINER function current_user is the OWNER, not the caller — the grant IS the control.)
+revoke execute on function public.consume_generation(uuid, int) from public, anon, authenticated;
+revoke execute on function public.refund_generation(uuid)       from public, anon, authenticated;
+grant  execute on function public.consume_generation(uuid, int) to service_role;
+grant  execute on function public.refund_generation(uuid)       to service_role;
 
 -- realtime: ensure pokes changes are published
 alter publication supabase_realtime add table public.pokes;
