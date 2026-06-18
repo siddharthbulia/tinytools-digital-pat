@@ -3,6 +3,15 @@
     <channel>
         <title>Digital Pat</title>
         <item>
+            <title>2.8.6</title>
+            <description><![CDATA[New character: Shreya joins the crew — 27 to pick from. Choose her from Character ▸ (right-click your pet).]]></description>
+            <pubDate>Thu, 18 Jun 2026 18:49:51 +0530</pubDate>
+            <sparkle:version>2.8.6</sparkle:version>
+            <sparkle:shortVersionString>2.8.6</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://digital-pat.vercel.app/downloads/DigitalPat-2.8.6.dmg" length="6562831" type="application/octet-stream" sparkle:edSignature="9/TCzAF39W1GDlueCC8M0qUX+311qqQtMpokp2+j5XEvBRvUMPIvWwwg8QCGlYEaBC/M/6NP7AK5mPtIJzU2DQ=="/>
+        </item>
+        <item>
             <title>2.8.5</title>
             <description><![CDATA[Stability &amp; polish from a deep code audit: patting always registers now (a quick trackpad flick no longer gets swallowed), your pet can't get stranded off-screen, rapid pats keep their hearts and purr, re-picking Chipkoo can no longer desync (friends can always pat you free), presence reconnects cleanly after sleep / Wi-Fi changes, regenerating a character shows the new art right away, and your friends list is more resilient. Plus backend hardening for the daily character-generation limit.]]></description>
             <pubDate>Thu, 18 Jun 2026 16:54:12 +0530</pubDate>
